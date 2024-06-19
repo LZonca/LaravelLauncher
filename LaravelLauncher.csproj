@@ -6,13 +6,9 @@
     <Nullable>enable</Nullable>
 	<UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
-    <StartupObject>LaravelLauncher.App</StartupObject>
+    <StartupObject></StartupObject>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Remove="artworks-Q61q2IpGG3x0QvIQ-FRIyHw-t500x500.jpg" />
-    <None Remove="images.jpg" />
-  </ItemGroup>
 
   <ItemGroup>
     <Reference Include="WindowsFormsIntegration.Package">
@@ -21,8 +17,23 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="artworks-Q61q2IpGG3x0QvIQ-FRIyHw-t500x500.jpg" />
-    <Resource Include="images.jpg" />
+    <Resource Include="Assets\artworks-Q61q2IpGG3x0QvIQ-FRIyHw-t500x500.jpg" />
+    <Resource Include="Assets\images.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
     
 </Project>

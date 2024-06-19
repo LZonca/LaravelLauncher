@@ -17,6 +17,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Forms;
 using LaravelLauncher.Projects;
+using System.Windows.Threading;
+
 
 
 namespace LaravelLauncher
@@ -32,7 +34,7 @@ namespace LaravelLauncher
         private bool startYarn;
         private bool startTasks;
         private Dictionary<string, string> folderNameToPathMap = new Dictionary<string, string>();
-
+        private string serverPath = string.Empty;
 
 
 
@@ -40,7 +42,27 @@ namespace LaravelLauncher
         {
             InitializeComponent();
             LoadRecentProjects();
+            string path = Properties.Settings.Default.ServerPath;
+            if (!string.IsNullOrEmpty(path))
+            {
+                serverPath = path;
+                LocalServerPathLabel.Content = path;
+            }
+            else
+            {
+                LocalServerPathLabel.Content = "Aucun serveur local sélectionné"; 
+            }
+
+            DispatcherTimer timer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(5) // Vérifie l'état toutes les 5 secondes
+            };
+            timer.Tick += (sender, e) => UpdateButtonState();
+            timer.Start();
+            UpdateButtonState();
         }
+
+
 
         static void RunCommand(string command)
         {
@@ -115,7 +137,7 @@ namespace LaravelLauncher
 
         private void SelectProjectPath_Click(object sender, RoutedEventArgs e)
         {
-            using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
+            using (var dialog = new FolderBrowserDialog())
             {
                 if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
@@ -143,7 +165,32 @@ namespace LaravelLauncher
 
         private void StartLocalServerBtn_Click(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                // Récupère le chemin de l'exécutable sauvegardé dans les préférences utilisateur
+                string executablePath = serverPath;
 
+                // Vérifie si le chemin n'est pas vide
+                if (!string.IsNullOrEmpty(executablePath))
+                {
+                    ProcessStartInfo startInfo = new ProcessStartInfo(executablePath)
+                    {
+                        UseShellExecute = true, // Nécessaire pour lancer en tant qu'admin
+                        Verb = "runas" // Indique de lancer le processus avec des privilèges d'administrateur
+                    };
+
+                    Process.Start(startInfo);
+                }
+                else
+                {
+                    System.Windows.MessageBox.Show("Le chemin de l'exécutable n'est pas défini.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Gestion des erreurs si l'exécutable ne peut pas être lancé
+                System.Windows.MessageBox.Show($"Impossible de lancer l'exécutable : {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void StartProjectBtn_Click(object sender, RoutedEventArgs e)
@@ -178,9 +225,43 @@ namespace LaravelLauncher
             }
         }
 
+        private bool IsProcessRunning(string processName)
+        {
+            // Obtient tous les processus en cours d'exécution avec le nom spécifié
+            Process[] processes = Process.GetProcessesByName(processName);
+
+            // Vérifie si au moins un processus avec le nom spécifié est en cours d'exécution
+            return processes.Length > 0;
+        }
+
+  
+
+        private void UpdateButtonState()
+        {
+            // Remplacez "nomDuProcessus" par le nom réel du processus que vous vérifiez
+            string executableName = System.IO.Path.GetFileNameWithoutExtension(serverPath);
+            bool processIsRunning = IsProcessRunning(executableName);
+
+            if (processIsRunning)
+            {
+                // Si le processus est en cours d'exécution, désactivez le bouton et changez le texte
+                StartLocalServerBtn.IsEnabled = false;
+                StartLocalServerBtn.Content = "Serveur en cours d'exécution";
+                StartLocalServerBtn.Background = Brushes.Green;
+            }
+            else
+            {
+                // Si le processus n'est pas en cours d'exécution, activez le bouton et changez le texte
+                StartLocalServerBtn.IsEnabled = true;
+                StartLocalServerBtn.Content = "Serveur Hors ligne (Cliquez pour le lancer)";
+                StartLocalServerBtn.Background = Brushes.Red;
+            }
+        }
+
         private void SettingsBtn_Click(object sender, RoutedEventArgs e)
         {
-
+            Settings settingsWindow = new Settings();
+            settingsWindow.Show();
         }
     }
 }
