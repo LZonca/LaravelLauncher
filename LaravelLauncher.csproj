@@ -2,9 +2,11 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows7.0</TargetFramework>
     <Nullable>enable</Nullable>
+	<UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
+    <StartupObject>LaravelLauncher.App</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,8 +15,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="WindowsFormsIntegration.Package">
+      <HintPath>..\..\VisualStudio\Common7\IDE\WindowsFormsIntegration.Package.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="artworks-Q61q2IpGG3x0QvIQ-FRIyHw-t500x500.jpg" />
     <Resource Include="images.jpg" />
   </ItemGroup>
-
+    
 </Project>
