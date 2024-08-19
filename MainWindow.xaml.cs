@@ -50,7 +50,7 @@ namespace LaravelLauncher
             }
             else
             {
-                LocalServerPathLabel.Content = "Aucun serveur local sélectionné"; 
+                LocalServerPathLabel.Content = "Aucun serveur local sélectionné";
             }
 
             DispatcherTimer timer = new DispatcherTimer
@@ -97,7 +97,7 @@ namespace LaravelLauncher
                 RecentProjectsList.Items.Add(new ListBoxItem { Content = folderName });
                 // Stocker la correspondance entre le nom du dossier et le chemin complet
                 folderNameToPathMap[folderName] = folderPath;
-                
+
             }
         }
 
@@ -144,7 +144,7 @@ namespace LaravelLauncher
                     string selectedPath = dialog.SelectedPath;
 
                     // Charger les paramètres existants
-  
+
                     var settings = SettingsManager.LoadSettings();
                     var projects = SettingsManager.GetProjectPaths();
 
@@ -193,20 +193,41 @@ namespace LaravelLauncher
             }
         }
 
+        private void RunCommandInNewWindow(string command)
+        {
+            ProcessStartInfo startInfo = new ProcessStartInfo("cmd.exe", "/c " + command)
+            {
+                UseShellExecute = true,
+                CreateNoWindow = false,
+                WindowStyle = ProcessWindowStyle.Normal
+            };
+            Process.Start(startInfo);
+        }
+
         private void StartProjectBtn_Click(object sender, RoutedEventArgs e)
         {
-            // Supposons que startNpm, startYarn, et startTasks sont définis ailleurs dans votre classe
-            // et représentent les paramètres actuels pour le projet sélectionné.
+            Console.WriteLine("Lancement du projet");
 
-            // Mettre à jour et sauvegarder les paramètres du projet sélectionné
             startTasks = taskWorkCheckbox.IsChecked == true;
             startNpm = npmCheckbox.IsChecked == true;
             startYarn = yarnCheckbox.IsChecked == true;
 
-            UpdateProjectSettings(projectPath, startNpm, startYarn, startTasks); // Remplacez new List<string>() par vos tâches réelles
+            UpdateProjectSettings(projectPath, startNpm, startYarn, startTasks);
 
-            // Lancer l'application
-            // Ici, vous pouvez ajouter la logique pour démarrer le projet, par exemple en exécutant des commandes spécifiques
+            RunCommandInNewWindow("cd " + projectPath + " && php artisan serve");
+
+            if (taskWorkCheckbox.IsChecked == true)
+            {
+                RunCommandInNewWindow("cd " + projectPath + " && php artisan schedule:work");
+            }
+            if (npmCheckbox.IsChecked == true)
+            {
+                RunCommandInNewWindow("cd " + projectPath + " && npm run dev");
+            }
+            if (yarnCheckbox.IsChecked == true)
+            {
+                RunCommandInNewWindow("cd " + projectPath + " && yarn run dev");
+            }
         }
 
         private void RecentProjectsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -234,7 +255,7 @@ namespace LaravelLauncher
             return processes.Length > 0;
         }
 
-  
+
 
         private void UpdateButtonState()
         {

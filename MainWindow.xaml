@@ -9,21 +9,19 @@
     <Window.Background>
         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
             <GradientStop Color="Black"/>
-            <GradientStop Color="#FFBB1212" Offset="1"/>
+            <GradientStop Color="#1E5128" Offset="1"/>
         </LinearGradientBrush>
     </Window.Background>
-    <Grid x:Name="MainGrid">
+    <Grid x:Name="MainGrid" Background="#1E5128">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="53*"/>
+            <RowDefinition Height="383*"/>
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="83*"/>
             <ColumnDefinition Width="6*"/>
         </Grid.ColumnDefinitions>
-        <Grid.Background>
-            <RadialGradientBrush>
-                <GradientStop Color="#FFA01515" Offset="0"/>
-                <GradientStop Color="#FF730808" Offset="1"/>
-            </RadialGradientBrush>
-        </Grid.Background>
-        <Label x:Name="TitleLabel" Content="Laravel Launcher" FontSize="72" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Agency FB" FontWeight="Bold" Margin="187,21,0,0" HorizontalAlignment="Left" Width="1050" RenderTransformOrigin="0.5,0.5" Foreground="#FF8E8E0B" VerticalAlignment="Top" Height="96">
+        <Label x:Name="TitleLabel" Content="Laravel Launcher" FontSize="72" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Agency FB" FontWeight="Bold" Margin="187,21,0,0" HorizontalAlignment="Left" Width="1050" RenderTransformOrigin="0.5,0.5" Foreground="#FF8E8E0B" Background="#191A19" VerticalAlignment="Top" Height="96" Grid.RowSpan="2">
             <Label.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -33,18 +31,18 @@
                 </TransformGroup>
             </Label.RenderTransform>
         </Label>
-        <Grid x:Name="InteriorGrid" Margin="0,147,0,0" Grid.ColumnSpan="2">
+        <Grid x:Name="InteriorGrid" Margin="0,41,0,0" Grid.ColumnSpan="2" Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition x:Name="recentProjectsCollumn"/>
                 <ColumnDefinition x:Name="launchSettingsCollumn"/>
             </Grid.ColumnDefinitions>
-            <Grid x:Name="SelectionGrid" HorizontalAlignment="Center" Height="725" VerticalAlignment="Center" Width="692" Background="#FF7F1C1C">
-                <ListBox x:Name="RecentProjectsList" Background="#FF500606" VerticalAlignment="Top" HorizontalAlignment="Center" Height="528" Width="570" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="0,178,0,0" SelectionChanged="RecentProjectsList_SelectionChanged"/>
+            <Grid x:Name="SelectionGrid" HorizontalAlignment="Center" Height="725" VerticalAlignment="Center" Width="692" Background="#1E5128">
+                <ListBox x:Name="RecentProjectsList" Background="#4E9F3D" VerticalAlignment="Top" HorizontalAlignment="Center" Height="528" Width="570" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="0,178,0,0" SelectionChanged="RecentProjectsList_SelectionChanged"/>
                 <Label x:Name="NomProjetLabel" Content="Titre du projet" HorizontalAlignment="Center" VerticalAlignment="Top" Height="41" Width="692" FontSize="24" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="0,23,0,0"/>
                 <Label x:Name="CheminProjetLabel" Content="Chemin du projet" HorizontalAlignment="Center" Margin="0,64,0,0" VerticalAlignment="Top" Height="31" Width="590" HorizontalContentAlignment="Center"/>
                 <Button x:Name="FileSelectBtn" Content="Sélectionner un dossier" HorizontalAlignment="Center" Margin="0,100,0,0" VerticalAlignment="Top" Height="42" Width="138" Click="SelectProjectPath_Click" FontWeight="Bold"/>
             </Grid>
-            <Grid x:Name="OptionsGrid" Grid.Column="1" HorizontalAlignment="Left" Width="712" Background="#FF690303">
+            <Grid x:Name="OptionsGrid" Grid.Column="1" HorizontalAlignment="Left" Width="712" Background="#1E5128">
                 <Label x:Name="OptionsTitleLabel" Content="Options de lancement" HorizontalAlignment="Center" Margin="0,20,0,0" VerticalAlignment="Top" Height="44" Width="712" HorizontalContentAlignment="Center" FontSize="24"/>
                 <CheckBox x:Name="npmCheckbox" Content="Lancer npm" HorizontalAlignment="Left" Margin="229,161,0,0" VerticalAlignment="Top"  Height="24" Width="226" FontSize="18" VerticalContentAlignment="Center" FontWeight="Bold"/>
                 <CheckBox x:Name="yarnCheckbox" Content="Lancer yarn" HorizontalAlignment="Left" Margin="229,190,0,0" VerticalAlignment="Top"  Height="24" Width="226" FontSize="18" VerticalContentAlignment="Center" FontWeight="Bold"/>
