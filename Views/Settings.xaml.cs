@@ -40,6 +40,11 @@ namespace LaravelLauncher
             {
                 pathToExecLabel.Content = path;
             }
+            else
+            {
+                Properties.Settings.Default.ServerPath = pathToExecLabel.Content.ToString();
+                Properties.Settings.Default.Save();
+            }
         }
 
         

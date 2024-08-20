@@ -45,11 +45,21 @@ namespace LaravelLauncher
 
             DispatcherTimer timer = new DispatcherTimer
             {
-                Interval = TimeSpan.FromSeconds(5) // Vérifie l'état toutes les 5 secondes
+                Interval = TimeSpan.FromSeconds(5) // Check the state every 5 seconds
             };
             timer.Tick += (sender, e) => UpdateButtonState();
             timer.Start();
             UpdateButtonState();
+
+            // Check if projectPath is null or empty
+            if (string.IsNullOrEmpty(projectPath))
+            {
+                StartProjectBtn.IsEnabled = false;
+            }
+            else
+            {
+                StartProjectBtn.IsEnabled = true;
+            }
         }
 
 
@@ -102,8 +112,9 @@ namespace LaravelLauncher
                 npmCheckbox.IsChecked = projectSettings.UseNpm;
                 yarnCheckbox.IsChecked = projectSettings.UseYarn;
                 taskWorkCheckbox.IsChecked = projectSettings.startTasks;
-
+                StartProjectBtn.IsEnabled = true;
             }
+            
         }
 
         private void UpdateProjectSettings(string projectPath, bool useNpm, bool useYarn, bool startTasks)
@@ -155,33 +166,50 @@ namespace LaravelLauncher
 
         private void StartLocalServerBtn_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                // Récupère le chemin de l'exécutable sauvegardé dans les préférences utilisateur
-                string executablePath = serverPath;
+            string executableName = System.IO.Path.GetFileNameWithoutExtension(serverPath);
+            bool processIsRunning = IsProcessRunning(executableName);
 
-                // Vérifie si le chemin n'est pas vide
-                if (!string.IsNullOrEmpty(executablePath))
+            if (processIsRunning)
+            {
+                // Stop the server
+                StopServer(executableName);
+            }
+            else
+            {
+                // Start the server
+                try
                 {
-                    ProcessStartInfo startInfo = new ProcessStartInfo(executablePath)
+                    // Récupère le chemin de l'exécutable sauvegardé dans les préférences utilisateur
+                    string executablePath = serverPath;
+
+                    // Vérifie si le chemin n'est pas vide
+                    if (!string.IsNullOrEmpty(executablePath))
                     {
-                        UseShellExecute = true, // Nécessaire pour lancer en tant qu'admin
-                        Verb = "runas" // Indique de lancer le processus avec des privilèges d'administrateur
-                    };
+                        ProcessStartInfo startInfo = new ProcessStartInfo(executablePath)
+                        {
+                            UseShellExecute = true, // Nécessaire pour lancer en tant qu'admin
+                            Verb = "runas" // Indique de lancer le processus avec des privilèges d'administrateur
+                        };
 
-                    Process.Start(startInfo);
+                        Process.Start(startInfo);
+                    }
+                    else
+                    {
+                        System.Windows.MessageBox.Show("Le chemin de l'exécutable n'est pas défini.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    System.Windows.MessageBox.Show("Le chemin de l'exécutable n'est pas défini.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                    // Gestion des erreurs si l'exécutable ne peut pas être lancé
+                    System.Windows.MessageBox.Show($"Impossible de lancer l'exécutable : {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
-            catch (Exception ex)
-            {
-                // Gestion des erreurs si l'exécutable ne peut pas être lancé
-                System.Windows.MessageBox.Show($"Impossible de lancer l'exécutable : {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+
+            // Update the button state after starting or stopping the server
+            UpdateButtonState();
         }
+        
+        
 
         private void RunCommandInNewWindow(string command)
         {
@@ -238,10 +266,10 @@ namespace LaravelLauncher
 
         private bool IsProcessRunning(string processName)
         {
-            // Obtient tous les processus en cours d'exécution avec le nom spécifié
+            // Obtains all running processes with the specified name
             Process[] processes = Process.GetProcessesByName(processName);
 
-            // Vérifie si au moins un processus avec le nom spécifié est en cours d'exécution
+            // Checks if at least one process with the specified name is running
             return processes.Length > 0;
         }
 
@@ -249,26 +277,48 @@ namespace LaravelLauncher
 
         private void UpdateButtonState()
         {
-            // Remplacez "nomDuProcessus" par le nom réel du processus que vous vérifiez
+            // Ensure serverPath is correctly set
+            if (string.IsNullOrEmpty(serverPath))
+            {
+                StartLocalServerBtn.IsEnabled = true;
+                StartLocalServerBtn.Content = "Serveur Hors ligne (Cliquez pour le lancer)";
+                StartLocalServerBtn.Background = new SolidColorBrush(Colors.Red);
+                return;
+            }
+
+            // Get the executable name without extension
             string executableName = System.IO.Path.GetFileNameWithoutExtension(serverPath);
             bool processIsRunning = IsProcessRunning(executableName);
 
             if (processIsRunning)
             {
-                // Si le processus est en cours d'exécution, désactivez le bouton et changez le texte
-                StartLocalServerBtn.IsEnabled = false;
-                StartLocalServerBtn.Content = "Serveur en cours d'exécution";
-                StartLocalServerBtn.Background = Brushes.Green;
+                // If the process is running, change the button to stop the server
+                StartLocalServerBtn.IsEnabled = true;
+                StartLocalServerBtn.Content = "Arrêter le serveur local";
+                StartLocalServerBtn.Background = new SolidColorBrush(Colors.Green);
             }
             else
             {
-                // Si le processus n'est pas en cours d'exécution, activez le bouton et changez le texte
+                // If the process is not running, enable the button to start the server
                 StartLocalServerBtn.IsEnabled = true;
-                StartLocalServerBtn.Content = "Serveur Hors ligne (Cliquez pour le lancer)";
-                StartLocalServerBtn.Background = Brushes.Red;
+                StartLocalServerBtn.Content = "Lancer le serveur local";
+                StartLocalServerBtn.Background = new SolidColorBrush(Colors.Red);
             }
         }
 
+        private void StopServer(string processName)
+        {
+            // Obtains all running processes with the specified name
+            Process[] processes = Process.GetProcessesByName(processName);
+
+            // Stops each process
+            foreach (var process in processes)
+            {
+                process.Kill();
+                process.WaitForExit();
+            }
+        }
+        
         private void SettingsBtn_Click(object sender, RoutedEventArgs e)
         {
             Settings settingsWindow = new Settings();
