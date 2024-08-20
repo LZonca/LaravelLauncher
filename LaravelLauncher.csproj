@@ -11,6 +11,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\images.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="WindowsFormsIntegration.Package">
       <HintPath>..\..\VisualStudio\Common7\IDE\WindowsFormsIntegration.Package.dll</HintPath>
     </Reference>
@@ -18,6 +22,7 @@
 
   <ItemGroup>
     <Resource Include="Assets\artworks-Q61q2IpGG3x0QvIQ-FRIyHw-t500x500.jpg" />
+    <Resource Include="Assets\images.ico" />
     <Resource Include="Assets\images.jpg" />
   </ItemGroup>
 
