@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LaravelLauncher"
         mc:Ignorable="d"
-        Title="Laravel Launcher" Height="888" Width="1424" HorizontalAlignment="Center" VerticalAlignment="Center" Icon="/Assets/images.jpg">
+        Title="Laravel Launcher" Height="744" Width="1443" HorizontalAlignment="Center" VerticalAlignment="Center" Icon="/Assets/images.jpg">
     <Window.Background>
         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
             <GradientStop Color="Black"/>
@@ -21,41 +21,43 @@
             <ColumnDefinition Width="83*"/>
             <ColumnDefinition Width="6*"/>
         </Grid.ColumnDefinitions>
-        <Label x:Name="TitleLabel" Content="Laravel Launcher" FontSize="72" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Agency FB" FontWeight="Bold" Margin="187,21,0,0" HorizontalAlignment="Left" Width="1050" RenderTransformOrigin="0.5,0.5" Foreground="#FF8E8E0B" Background="#191A19" VerticalAlignment="Top" Height="96" Grid.RowSpan="2">
-            <Label.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform/>
-                    <SkewTransform AngleY="0.045"/>
-                    <RotateTransform/>
-                    <TranslateTransform Y="0.749"/>
-                </TransformGroup>
-            </Label.RenderTransform>
-        </Label>
+        <Grid x:Name="HeaderGrid" Grid.RowSpan="2" Grid.ColumnSpan="2" Margin="0,0,0,632">
+            <Label x:Name="TitleLabel" Content="Laravel Launcher" FontSize="72" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Agency FB" FontWeight="Bold" RenderTransformOrigin="0.5,0.5" Foreground="#FF8E8E0B" Background="#191A19" VerticalAlignment="Center" Height="96" Margin="66,0,138,0">
+                <Label.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform AngleY="0.045"/>
+                        <RotateTransform/>
+                        <TranslateTransform Y="0.749"/>
+                    </TransformGroup>
+                </Label.RenderTransform>
+            </Label>
+            <Button x:Name="SettingsBtn" Margin="0,0,37,0" VerticalAlignment="Center" Height="48" Click="SettingsBtn_Click" HorizontalAlignment="Right" Width="63">
+                <Button.Background>
+                    <ImageBrush ImageSource="/Assets/images.jpg"/>
+                </Button.Background>
+            </Button>
+        </Grid>
         <Grid x:Name="InteriorGrid" Margin="0,41,0,0" Grid.ColumnSpan="2" Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition x:Name="recentProjectsCollumn"/>
                 <ColumnDefinition x:Name="launchSettingsCollumn"/>
             </Grid.ColumnDefinitions>
-            <Grid x:Name="SelectionGrid" HorizontalAlignment="Center" Height="725" VerticalAlignment="Center" Width="692" Background="#1E5128">
-                <ListBox x:Name="RecentProjectsList" Background="#4E9F3D" VerticalAlignment="Top" HorizontalAlignment="Center" Height="528" Width="570" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="0,178,0,0" SelectionChanged="RecentProjectsList_SelectionChanged"/>
+            <Grid x:Name="SelectionGrid" HorizontalAlignment="Center" Height="578" VerticalAlignment="Center" Width="595" Background="#1E5128">
+                <ListBox x:Name="RecentProjectsList" Background="#4E9F3D" HorizontalAlignment="Right" Width="450" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="0,152,73,153" SelectionChanged="RecentProjectsList_SelectionChanged"/>
                 <Label x:Name="NomProjetLabel" Content="Titre du projet" HorizontalAlignment="Center" VerticalAlignment="Top" Height="41" Width="692" FontSize="24" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="0,23,0,0"/>
                 <Label x:Name="CheminProjetLabel" Content="Chemin du projet" HorizontalAlignment="Center" Margin="0,64,0,0" VerticalAlignment="Top" Height="31" Width="590" HorizontalContentAlignment="Center"/>
                 <Button x:Name="FileSelectBtn" Content="Sélectionner un dossier" HorizontalAlignment="Center" Margin="0,100,0,0" VerticalAlignment="Top" Height="42" Width="138" Click="SelectProjectPath_Click" FontWeight="Bold"/>
             </Grid>
-            <Grid x:Name="OptionsGrid" Grid.Column="1" HorizontalAlignment="Left" Width="712" Background="#1E5128">
+            <Grid x:Name="OptionsGrid" Grid.Column="1" HorizontalAlignment="Center" Width="594" Background="#1E5128" Margin="0,0,0,11">
                 <Label x:Name="OptionsTitleLabel" Content="Options de lancement" HorizontalAlignment="Center" Margin="0,20,0,0" VerticalAlignment="Top" Height="44" Width="712" HorizontalContentAlignment="Center" FontSize="24"/>
-                <CheckBox x:Name="npmCheckbox" Content="Lancer npm" HorizontalAlignment="Left" Margin="229,161,0,0" VerticalAlignment="Top"  Height="24" Width="226" FontSize="18" VerticalContentAlignment="Center" FontWeight="Bold"/>
-                <CheckBox x:Name="yarnCheckbox" Content="Lancer yarn" HorizontalAlignment="Left" Margin="229,190,0,0" VerticalAlignment="Top"  Height="24" Width="226" FontSize="18" VerticalContentAlignment="Center" FontWeight="Bold"/>
-                <CheckBox x:Name="taskWorkCheckbox" Content="Démarrer les taches programées" HorizontalAlignment="Left" Margin="229,219,0,0" VerticalAlignment="Top"  Height="24" FontSize="18" VerticalContentAlignment="Center" FontWeight="Bold"/>
-                <Button x:Name="StartLocalServerBtn" Content="Lancer serveur local" HorizontalAlignment="Center" Margin="0,317,0,0" VerticalAlignment="Top" Height="46" Click="StartLocalServerBtn_Click" FontWeight="Bold"/>
-                <Button x:Name="StartProjectBtn" Content="Lancer le projet" HorizontalAlignment="Left" Margin="215,462,0,0" VerticalAlignment="Top" Height="67" Width="311" Click="StartProjectBtn_Click" FontSize="24" FontWeight="Bold"/>
-                <Label x:Name="LocalServerPathLabel" Content="Local server path&#xD;&#xA;" HorizontalAlignment="Center" Margin="0,279,0,0" VerticalAlignment="Top" Height="30" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                <CheckBox x:Name="npmCheckbox" Content="Lancer npm" HorizontalAlignment="Left" Margin="142,153,0,0" VerticalAlignment="Top"  Height="24" Width="228" FontSize="18" VerticalContentAlignment="Center" FontWeight="Bold"/>
+                <CheckBox x:Name="yarnCheckbox" Content="Lancer yarn" HorizontalAlignment="Left" Margin="142,182,0,0" VerticalAlignment="Top"  Height="24" Width="228" FontSize="18" VerticalContentAlignment="Center" FontWeight="Bold"/>
+                <CheckBox x:Name="taskWorkCheckbox" Content="Démarrer les taches programées" HorizontalAlignment="Left" Margin="142,211,0,0" VerticalAlignment="Top"  Height="24" FontSize="18" VerticalContentAlignment="Center" FontWeight="Bold" Width="296"/>
+                <Button x:Name="StartLocalServerBtn" Content="Lancer serveur local" HorizontalAlignment="Center" Margin="0,314,0,0" VerticalAlignment="Top" Height="46" Click="StartLocalServerBtn_Click" FontWeight="Bold"/>
+                <Button x:Name="StartProjectBtn" Content="Lancer le projet" HorizontalAlignment="Center" Margin="0,438,0,0" VerticalAlignment="Top" Height="67" Width="311" Click="StartProjectBtn_Click" FontSize="24" FontWeight="Bold"/>
+                <Label x:Name="LocalServerPathLabel" Content="Local server path&#xA;" HorizontalAlignment="Center" Margin="0,279,0,0" VerticalAlignment="Top" Height="30" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
             </Grid>
         </Grid>
-        <Button x:Name="SettingsBtn" HorizontalAlignment="Left" Margin="1317,43,0,0" VerticalAlignment="Top" Height="47" Width="48" Click="SettingsBtn_Click" Grid.ColumnSpan="2">
-            <Button.Background>
-                <ImageBrush ImageSource="/Assets/images.jpg"/>
-            </Button.Background>
-        </Button>
     </Grid>
 </Window>
