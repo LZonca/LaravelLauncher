@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -9,12 +10,19 @@ using System.Windows.Media;
 using System.Windows.Forms;
 using LaravelLauncher.Projects;
 using System.Windows.Threading;
+using System.Management;
+using System.Runtime.InteropServices;
+using System.Windows.Interop; // Added namespace
 using Application = System.Windows.Application;
 
 namespace LaravelLauncher
 {
     public partial class MainWindow : Window
     {
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
+
+        private IntPtr mainWindowHandle;
         private NotifyIcon notifyIcon;
         private string projectPath = string.Empty;
         private bool startNpm;
@@ -22,10 +30,12 @@ namespace LaravelLauncher
         private bool startTasks;
         private Dictionary<string, string> folderNameToPathMap = new Dictionary<string, string>();
         private string serverPath = string.Empty;
+        private Dictionary<string, Process> processList = new Dictionary<string, Process>();
 
         public MainWindow()
         {
             InitializeComponent();
+            mainWindowHandle = new WindowInteropHelper(this).Handle;
             LoadRecentProjects();
             string path = Properties.Settings.Default.ServerPath;
             if (!string.IsNullOrEmpty(path))
@@ -40,7 +50,7 @@ namespace LaravelLauncher
 
             DispatcherTimer timer = new DispatcherTimer
             {
-                Interval = TimeSpan.FromSeconds(5) // Check the state every 5 seconds
+                Interval = TimeSpan.FromSeconds(5)
             };
             timer.Tick += (sender, e) => UpdateButtonState();
             timer.Start();
@@ -55,32 +65,31 @@ namespace LaravelLauncher
                 StartProjectBtn.IsEnabled = true;
             }
 
-            // Load the icon from the embedded resources
             using (Stream iconStream = Application.GetResourceStream(new Uri("pack://application:,,,/Assets/images.ico")).Stream)
             {
                 notifyIcon = new NotifyIcon
                 {
-                    Icon = new System.Drawing.Icon(iconStream), // Set the icon from the resource stream
-                    Visible = false,
+                    Icon = new Icon(iconStream),
+                    Visible = true,
                     ContextMenuStrip = new ContextMenuStrip()
                 };
             }
 
             var runningMenuItem = new ToolStripMenuItem("Running");
             runningMenuItem.DropDownItems.Add(new ToolStripMenuItem("Stop All Processes", null, (s, e) => StopAllProcesses()));
-            runningMenuItem.DropDownItems.Add(new ToolStripMenuItem("Stop serve", null, (s, e) => StopProcess("php")));
-            runningMenuItem.DropDownItems.Add(new ToolStripMenuItem("Stop npm", null, (s, e) => StopProcess("npm")));
-            runningMenuItem.DropDownItems.Add(new ToolStripMenuItem("Stop yarn", null, (s, e) => StopProcess("yarn")));
-            runningMenuItem.DropDownItems.Add(new ToolStripMenuItem("Stop Tasks", null, (s, e) => StopProcess("tasks")));
-            runningMenuItem.DropDownItems.Add(new ToolStripMenuItem("Stop Server", null, (s, e) => StopServer(System.IO.Path.GetFileNameWithoutExtension(serverPath))));
+            /*runningMenuItem.DropDownItems.Add(new ToolStripMenuItem("Stop npm", null, (s, e) => StopProcess("npm", "npm run dev")));
+            runningMenuItem.DropDownItems.Add(new ToolStripMenuItem("Stop yarn", null, (s, e) => StopProcess("yarn", "yarn run dev")));
+            runningMenuItem.DropDownItems.Add(new ToolStripMenuItem("Stop Tasks", null, (s, e) => StopProcess("tasks", "php artisan schedule:work")));*/
+            runningMenuItem.DropDownItems.Add(new ToolStripMenuItem("Stop developpment env", null, (s, e) => StopServer(System.IO.Path.GetFileNameWithoutExtension(serverPath))));
+            /*runningMenuItem.DropDownItems.Add(new ToolStripMenuItem("Stop php artisan serve", null, (s, e) => StopProcess("php", "php artisan serve")));*/
 
             var restartMenuItem = new ToolStripMenuItem("Restart");
             restartMenuItem.DropDownItems.Add(new ToolStripMenuItem("Restart All Processes", null, (s, e) => RestartAllProcesses()));
-            restartMenuItem.DropDownItems.Add(new ToolStripMenuItem("Restart serve", null, (s, e) => RestartProcess("php", "php artisan serve")));
-            restartMenuItem.DropDownItems.Add(new ToolStripMenuItem("Restart npm", null, (s, e) => RestartProcess("npm", "npm run dev")));
+            /*restartMenuItem.DropDownItems.Add(new ToolStripMenuItem("Restart npm", null, (s, e) => RestartProcess("npm", "npm run dev")));
             restartMenuItem.DropDownItems.Add(new ToolStripMenuItem("Restart yarn", null, (s, e) => RestartProcess("yarn", "yarn run dev")));
-            restartMenuItem.DropDownItems.Add(new ToolStripMenuItem("Restart Tasks", null, (s, e) => RestartProcess("tasks", "php artisan schedule:work")));
-            restartMenuItem.DropDownItems.Add(new ToolStripMenuItem("Restart Server", null, (s, e) => RestartServer()));
+            restartMenuItem.DropDownItems.Add(new ToolStripMenuItem("Restart Tasks", null, (s, e) => RestartProcess("tasks", "php artisan schedule:work")));*/
+            restartMenuItem.DropDownItems.Add(new ToolStripMenuItem("Restart developpment env", null, (s, e) => RestartServer()));
+            /*restartMenuItem.DropDownItems.Add(new ToolStripMenuItem("Restart php artisan serve", null, (s, e) => RestartProcess("php", "php artisan serve")));*/
 
             notifyIcon.ContextMenuStrip.Items.Add(new ToolStripMenuItem("Restore", null, (s, e) => RestoreFromTray()));
             notifyIcon.ContextMenuStrip.Items.Add(runningMenuItem);
@@ -88,26 +97,134 @@ namespace LaravelLauncher
             notifyIcon.ContextMenuStrip.Items.Add(new ToolStripMenuItem("Exit", null, (s, e) => System.Windows.Application.Current.Shutdown()));
         }
         
-        
+        [DllImport("kernel32.dll", SetLastError = true)]
+        static extern bool GenerateConsoleCtrlEvent(uint dwCtrlEvent, uint dwProcessGroupId);
+
+        [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
+        static extern bool AttachConsole(int dwProcessId);
+
+        [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
+        static extern bool FreeConsole();
+
+        const uint CTRL_C_EVENT = 0;
+
 
         private void StopAllProcesses()
         {
-            StopServer(System.IO.Path.GetFileNameWithoutExtension(serverPath));
+            Console.WriteLine("\nStopping all processes");
+
+            foreach (var processEntry in processList.ToList()) // Create a copy of the list to avoid modification issues
+            {
+                StopProcess(processEntry.Key);
+            }
+
+            processList.Clear(); // Clear the list after stopping all processes
+        }
+
+
+        /*private void StopAllProcesses()
+        {
+            Console.WriteLine("\n Stopping process ");
+            /*StopServer(System.IO.Path.GetFileNameWithoutExtension(serverPath));#1#
             StopProcess("npm");
             StopProcess("yarn");
             StopProcess("php");
-        }
-        
+            StopProcess("tasks");
+        }*/
+
         private void StopProcess(string processName)
         {
-            Process[] processes = Process.GetProcessesByName(processName);
-            foreach (var process in processes)
+            if (processList.TryGetValue(processName, out Process process))
             {
-                process.Kill();
-                process.WaitForExit();
+                try
+                {
+                    Console.WriteLine($"Stopping process: {processName} with PID {process.Id}");
+
+                    // Attach to the console of the target process
+                    if (AttachConsole(process.Id))
+                    {
+                        // Send a CTRL_C_EVENT to the console
+                        if (!GenerateConsoleCtrlEvent(CTRL_C_EVENT, 0))
+                        {
+                            Console.WriteLine($"Failed to send CTRL+C to process {processName}. Error: {Marshal.GetLastWin32Error()}");
+                        }
+
+                        // Detach immediately after sending the signal
+                        FreeConsole();
+
+                        // Wait for the process to exit
+                        process.WaitForExit();
+
+                        Console.WriteLine($"Successfully stopped {processName} with PID: {process.Id}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Failed to attach to process {processName} console. Error: {Marshal.GetLastWin32Error()}");
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Error stopping process {processName} with PID: {process.Id}. {e.Message}");
+                }
+                finally
+                {
+                    processList.Remove(processName); // Remove the process from the list
+                }
             }
+            else
+            {
+                Console.WriteLine($"No process found for {processName}");
+            }
+            
+            /*if (PIDList != null && PIDList.TryGetValue(processName, out int pid))
+            {
+                try
+                {
+                    // Attempt to get the process by PID
+                    Process process = Process.GetProcessById(pid);
+            
+                    // Check if the process has already exited
+                    if (process == null || process.HasExited)
+                    {
+                        Console.WriteLine($"Process {processName} with PID: {pid} has already exited or does not exist.");
+                        PIDList.Remove(processName);
+                        return;
+                    }
+
+                    // Attempt to kill the process
+                    Console.WriteLine($"Stopping {processName} with PID: {pid}");
+                    process.Kill();
+                    process.WaitForExit();
+                    Console.WriteLine($"Successfully stopped {processName} with PID: {pid}");
+                    PIDList.Remove(processName);
+                }
+                catch (ArgumentException)
+                {
+                    // Handle case where the process does not exist
+                    Console.WriteLine($"No process with PID: {pid} was found.");
+                    PIDList.Remove(processName);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    // Handle case where the process is already exiting or cannot be terminated
+                    Console.WriteLine($"Process {processName} with PID: {pid} could not be terminated: {ex.Message}");
+                }
+                catch (Exception ex)
+                {
+                    // Handle any other exceptions
+                    Console.WriteLine($"Error stopping process {processName} with PID: {pid}: {ex.Message}");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"No PID found for process {processName}");
+            }*/
+            
+            
+            
         }
-        
+
+
         /*static void RunCommand(string command)
         {
             ProcessStartInfo processStartInfo = new ProcessStartInfo("cmd", "/c " + command);
@@ -245,19 +362,19 @@ namespace LaravelLauncher
         
         private void StartAllProcesses()
         {
-            RunCommandInNewWindow("cd " + projectPath + " && php artisan serve");
+            RunCommandInNewWindow("cd " + projectPath + " && php artisan serve", "php");
 
             if (taskWorkCheckbox.IsChecked == true)
             {
-                RunCommandInNewWindow("cd " + projectPath + " && php artisan schedule:work");
+                RunCommandInNewWindow("cd " + projectPath + " && php artisan schedule:work", "tasks");
             }
             if (npmCheckbox.IsChecked == true)
             {
-                RunCommandInNewWindow("cd " + projectPath + " && npm run dev");
+                RunCommandInNewWindow("cd " + projectPath + " && npm run dev", "npm");
             }
             if (yarnCheckbox.IsChecked == true)
             {
-                RunCommandInNewWindow("cd " + projectPath + " && yarn run dev");
+                RunCommandInNewWindow("cd " + projectPath + " && yarn run dev", "yarn");
             }
         }
         private void RestartAllProcesses()
@@ -268,7 +385,7 @@ namespace LaravelLauncher
         private void RestartProcess(string processName, string command)
         {
             StopProcess(processName);
-            RunCommandInNewWindow("cd " + projectPath + " && " + command);
+            RunCommandInNewWindow("cd " + projectPath + " && " + command, processName);
         }
         
         
@@ -277,16 +394,50 @@ namespace LaravelLauncher
             StartLocalServer();
         }
 
-        private void RunCommandInNewWindow(string command)
+        private void RunCommandInNewWindow(string command, string commandName)
         {
+            ProcessStartInfo startInfo = new ProcessStartInfo("cmd.exe", "/c " + command)
+            {
+                UseShellExecute = true, // Do not redirect output
+                CreateNoWindow = false,
+                WindowStyle = ProcessWindowStyle.Normal
+            };
+
+            var process = Process.Start(startInfo);
+
+            if (process != null)
+            {
+                Console.WriteLine($"Started process {commandName} with PID: {process.Id}");
+                processList[commandName] = process;
+
+                // Set the parent of the command window to the main application window
+                SetParent(process.MainWindowHandle, mainWindowHandle);
+            }
+        }
+        
+        /*private void RunCommandInNewWindow(string command, string commandName)
+        {
+            if (PIDList == null)
+            {
+                PIDList = new Dictionary<string, int>();
+            }
+
             ProcessStartInfo startInfo = new ProcessStartInfo("cmd.exe", "/c " + command)
             {
                 UseShellExecute = true,
                 CreateNoWindow = false,
                 WindowStyle = ProcessWindowStyle.Normal
             };
-            Process.Start(startInfo);
-        }
+            var process = Process.Start(startInfo);
+            if (process != null)
+            {
+                Console.WriteLine($"Started process {commandName} with PID: {process.Id}");
+                PIDList[commandName] = process.Id;
+
+                // Set the parent of the command window to the main application window
+                SetParent(process.MainWindowHandle, mainWindowHandle);
+            }
+        }*/
 
         private void StartProjectBtn_Click(object sender, RoutedEventArgs e)
         {
@@ -298,19 +449,19 @@ namespace LaravelLauncher
 
             UpdateProjectSettings(projectPath, startNpm, startYarn, startTasks);
 
-            RunCommandInNewWindow("cd " + projectPath + " && php artisan serve");
+            RunCommandInNewWindow("cd " + projectPath + " && php artisan serve", "php");
 
             if (taskWorkCheckbox.IsChecked == true)
             {
-                RunCommandInNewWindow("cd " + projectPath + " && php artisan schedule:work");
+                RunCommandInNewWindow("cd " + projectPath + " && php artisan schedule:work", "tasks");
             }
             if (npmCheckbox.IsChecked == true)
             {
-                RunCommandInNewWindow("cd " + projectPath + " && npm run dev");
+                RunCommandInNewWindow("cd " + projectPath + " && npm run dev", "npm");
             }
             if (yarnCheckbox.IsChecked == true)
             {
-                RunCommandInNewWindow("cd " + projectPath + " && yarn run dev");
+                RunCommandInNewWindow("cd " + projectPath + " && yarn run dev", "yarn");
             }
 
             MinimizeToTray();
@@ -370,7 +521,7 @@ namespace LaravelLauncher
             if (string.IsNullOrEmpty(serverPath))
             {
                 StartLocalServerBtn.IsEnabled = true;
-                StartLocalServerBtn.Content = "Serveur Hors ligne (Cliquez pour le lancer)";
+                StartLocalServerBtn.Content = "Environnement de développement hors-ligne (Cliquez pour le lancer)";
                 StartLocalServerBtn.Background = new SolidColorBrush(Colors.Red);
                 return;
             }
@@ -381,26 +532,28 @@ namespace LaravelLauncher
             if (processIsRunning)
             {
                 StartLocalServerBtn.IsEnabled = true;
-                StartLocalServerBtn.Content = "Arrêter le serveur local";
+                StartLocalServerBtn.Content = "Arrêter l'environnement de développement";
                 StartLocalServerBtn.Background = new SolidColorBrush(Colors.Green);
             }
             else
             {
                 StartLocalServerBtn.IsEnabled = true;
-                StartLocalServerBtn.Content = "Lancer le serveur local";
+                StartLocalServerBtn.Content = "Lancer l'environnement de développement";
                 StartLocalServerBtn.Background = new SolidColorBrush(Colors.Red);
             }
         }
 
         private void StopServer(string processName)
-        {
-            Process[] processes = Process.GetProcessesByName(processName);
-            foreach (var process in processes)
-            {
-                process.Kill();
-                process.WaitForExit();
-            }
-        }
+         {
+             Process[] processes = Process.GetProcessesByName(processName);
+             foreach (var process in processes)
+             {
+                 process.Kill();
+                 process.WaitForExit();
+             }
+         }
+        
+        
 
         private void SettingsBtn_Click(object sender, RoutedEventArgs e)
         {
