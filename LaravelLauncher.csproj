@@ -32,6 +32,16 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Update="Ressources\Strings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Ressources\Strings.fr.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Strings.fr.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -43,6 +53,17 @@
 
   <ItemGroup>
     <PackageReference Include="System.Management" Version="9.0.0-preview.7.24405.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Ressources\Strings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Ressources\Strings.fr.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.fr.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
     
 </Project>

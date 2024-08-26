@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                                <xsd:element name="comment" type="xsd:string" minOccurs="0" />
+                            </xsd:sequence>
+                            <xsd:attribute name="name" use="required" type="xsd:string" />
+                            <xsd:attribute name="type" type="xsd:string" />
+                            <xsd:attribute name="mimetype" type="xsd:string" />
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="ProjectTitle" xml:space="preserve">
+    <value>Titre du projet</value>
+  </data>
+    <data name="ProjectPath" xml:space="preserve">
+    <value>Chemin du projet</value>
+  </data>
+    <data name="SelectFolder" xml:space="preserve">
+    <value>Sélectionner un dossier</value>
+  </data>
+    <data name="StartDevEnv" xml:space="preserve">
+    <value>Démarrer l'environnement de développement</value>
+  </data>
+    <data name="LaunchProject" xml:space="preserve">
+    <value>Lancer le projet</value>
+  </data>
+    <data name="LaunchOptions" xml:space="preserve">
+    <value>Options de lancement</value>
+  </data>
+    <data name="LaunchNpm" xml:space="preserve">
+    <value>Lancer npm</value>
+  </data>
+    <data name="LaunchYarn" xml:space="preserve">
+    <value>Lancer yarn</value>
+  </data>
+    <data name="StartScheduledTasks" xml:space="preserve">
+    <value>Démarrer les tâches planifiées</value>
+  </data>
+    <data name="LocalServerPath" xml:space="preserve">
+        <value>Chemin de l'environnement de développement</value>
+    </data>
+    <data name="TrayMenuRestore" xml:space="preserve">
+        <value>Restaurer</value>
+    </data>
+    <data name="TrayMenuStopAllProcesses" xml:space="preserve">
+      <value>Arrêter tous les processus</value>
+    </data>
+    <data name="TrayMenuStopDevEnv" xml:space="preserve">
+      <value>Arrêter l'environnement de développement</value>
+    </data>
+    <data name="TrayMenuRestartAllProcesses" xml:space="preserve">
+      <value>Redémarrer tous les processus</value>
+    </data>
+    <data name="TrayMenuRestartDevEnv" xml:space="preserve">
+      <value>Redémarrer l'environnement de développement</value>
+    </data>
+    <data name="TrayMenuExit" xml:space="preserve">
+      <value>Quitter</value>
+    </data>
+</root>
