@@ -25,6 +25,7 @@ namespace LaravelLauncher
         private static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
 
         private ResourceManager resourceManager;
+
         private IntPtr mainWindowHandle;
         private NotifyIcon notifyIcon;
         private string projectPath = string.Empty;
