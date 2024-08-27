@@ -38,7 +38,7 @@ namespace LaravelLauncher.Ressources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("LaravelLauncher.Ressources.Strings.fr", typeof(Strings_fr).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("LaravelLauncher.Resources.Strings.fr", typeof(Strings_fr).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -56,6 +56,15 @@ namespace LaravelLauncher.Ressources {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Processus actifs.
+        /// </summary>
+        internal static string ActiveProcesses {
+            get {
+                return ResourceManager.GetString("ActiveProcesses", resourceCulture);
             }
         }
         
@@ -150,7 +159,16 @@ namespace LaravelLauncher.Ressources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Quitter.
+        ///   Looks up a localized string similar to Arrêter l&apos;environnement de développement.
+        /// </summary>
+        internal static string StopDevEnv {
+            get {
+                return ResourceManager.GetString("StopDevEnv", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fermer.
         /// </summary>
         internal static string TrayMenuExit {
             get {
@@ -177,7 +195,34 @@ namespace LaravelLauncher.Ressources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Restaurer.
+        ///   Looks up a localized string similar to Redémarrer npm.
+        /// </summary>
+        internal static string TrayMenuRestartNpm {
+            get {
+                return ResourceManager.GetString("TrayMenuRestartNpm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Redémarrer les tâches.
+        /// </summary>
+        internal static string TrayMenuRestartTasks {
+            get {
+                return ResourceManager.GetString("TrayMenuRestartTasks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Redémarrer yarn.
+        /// </summary>
+        internal static string TrayMenuRestartYarn {
+            get {
+                return ResourceManager.GetString("TrayMenuRestartYarn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Agrandir.
         /// </summary>
         internal static string TrayMenuRestore {
             get {
@@ -200,6 +245,42 @@ namespace LaravelLauncher.Ressources {
         internal static string TrayMenuStopDevEnv {
             get {
                 return ResourceManager.GetString("TrayMenuStopDevEnv", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Arrêter npm.
+        /// </summary>
+        internal static string TrayMenuStopNpm {
+            get {
+                return ResourceManager.GetString("TrayMenuStopNpm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Arrêter les tâches.
+        /// </summary>
+        internal static string TrayMenuStopTasks {
+            get {
+                return ResourceManager.GetString("TrayMenuStopTasks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Arrêter yarn.
+        /// </summary>
+        internal static string TrayMenuStopYarn {
+            get {
+                return ResourceManager.GetString("TrayMenuStopYarn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Environnement de développement non défini.
+        /// </summary>
+        internal static string UnsetLocalServerPath {
+            get {
+                return ResourceManager.GetString("UnsetLocalServerPath", resourceCulture);
             }
         }
     }

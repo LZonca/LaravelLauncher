@@ -62,7 +62,7 @@
         <value>Chemin de l'environnement de développement</value>
     </data>
     <data name="TrayMenuRestore" xml:space="preserve">
-        <value>Restaurer</value>
+        <value>Agrandir</value>
     </data>
     <data name="TrayMenuStopAllProcesses" xml:space="preserve">
       <value>Arrêter tous les processus</value>
@@ -77,6 +77,33 @@
       <value>Redémarrer l'environnement de développement</value>
     </data>
     <data name="TrayMenuExit" xml:space="preserve">
-      <value>Quitter</value>
+        <value>Fermer</value>
+    </data>
+    <data name="StopDevEnv" xml:space="preserve">
+        <value>Arrêter l'environnement de développement</value>
+    </data>
+    <data name="UnsetLocalServerPath" xml:space="preserve">
+        <value>Environnement de développement non défini</value>
+    </data>
+    <data name="TrayMenuStopNpm" xml:space="preserve">
+  <value>Arrêter npm</value>
+</data>
+    <data name="TrayMenuStopYarn" xml:space="preserve">
+  <value>Arrêter yarn</value>
+</data>
+    <data name="TrayMenuStopTasks" xml:space="preserve">
+  <value>Arrêter les tâches</value>
+</data>
+    <data name="TrayMenuRestartNpm" xml:space="preserve">
+  <value>Redémarrer npm</value>
+</data>
+    <data name="TrayMenuRestartYarn" xml:space="preserve">
+  <value>Redémarrer yarn</value>
+</data>
+    <data name="TrayMenuRestartTasks" xml:space="preserve">
+  <value>Redémarrer les tâches</value>
+</data>
+    <data name="ActiveProcesses" xml:space="preserve">
+        <value>Processus actifs</value>
     </data>
 </root>

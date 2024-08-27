@@ -76,8 +76,34 @@
         <data name="TrayMenuRestartDevEnv" xml:space="preserve">
       <value>Restart development environment</value>
     </data>
-        <data name="TrayMenuExit" xml:space="preserve">
-      <value>Exit</value>
+    <data name="TrayMenuExit" xml:space="preserve">
+        <value>Close</value>
     </data>
-    
+    <data name="StopDevEnv" xml:space="preserve">
+        <value>Stop development environment</value>
+    </data>
+    <data name="UnsetLocalServerPath" xml:space="preserve">
+        <value>Development evnironement is not set</value>
+    </data>
+    <data name="TrayMenuStopNpm" xml:space="preserve">
+  <value>Stop npm</value>
+</data>
+    <data name="TrayMenuStopYarn" xml:space="preserve">
+  <value>Stop yarn</value>
+</data>
+    <data name="TrayMenuStopTasks" xml:space="preserve">
+  <value>Stop Tasks</value>
+</data>
+    <data name="TrayMenuRestartNpm" xml:space="preserve">
+  <value>Restart npm</value>
+</data>
+    <data name="TrayMenuRestartYarn" xml:space="preserve">
+  <value>Restart yarn</value>
+</data>
+    <data name="TrayMenuRestartTasks" xml:space="preserve">
+  <value>Restart Tasks</value>
+</data>
+    <data name="ActiveProcesses" xml:space="preserve">
+        <value>Active processes</value>
+    </data>
 </root>

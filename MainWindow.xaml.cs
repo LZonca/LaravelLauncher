@@ -14,30 +14,34 @@ using System.Windows.Threading;
 using System.Resources;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Windows.Forms.VisualStyles;
 using System.Windows.Interop; // Added namespace
 using Application = System.Windows.Application;
+using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace LaravelLauncher
 {
     public partial class MainWindow : Window
     {
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
+        
 
-        private ResourceManager resourceManager;
+        private ResourceManager _resourceManager;
 
-        private IntPtr mainWindowHandle;
-        private NotifyIcon notifyIcon;
-        private string projectPath = string.Empty;
-        private bool startNpm;
-        private bool startYarn;
-        private bool startTasks;
-        private Dictionary<string, string> folderNameToPathMap = new Dictionary<string, string>();
-        private string serverPath = string.Empty;
-        private Dictionary<string, Process> processList = new Dictionary<string, Process>();
+        private readonly IntPtr _mainWindowHandle;
+        private readonly NotifyIcon _notifyIcon;
+        private string _projectPath = string.Empty;
+        private bool _startNpm;
+        private bool _startYarn;
+        private bool _startTasks;
+        private readonly Dictionary<string?, string> _folderNameToPathMap = new Dictionary<string?, string>();
+        private readonly string _serverPath = string.Empty;
+        private readonly Dictionary<string, Process?> _processList = new Dictionary<string, Process?>();
 
         #region Process Management
 
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
+        
         [DllImport("kernel32.dll", SetLastError = true)]
         static extern bool GenerateConsoleCtrlEvent(uint dwCtrlEvent, uint dwProcessGroupId);
 
@@ -54,17 +58,17 @@ namespace LaravelLauncher
         {
             Console.WriteLine("\nStopping all processes");
 
-            foreach (var processEntry in processList.ToList()) // Create a copy of the list to avoid modification issues
+            foreach (var processEntry in _processList.ToList()) // Create a copy of the list to avoid modification issues
             {
                 StopProcess(processEntry.Key);
             }
 
-            processList.Clear(); // Clear the list after stopping all processes
+            _processList.Clear(); // Clear the list after stopping all processes
         }
 
         private void StopProcess(string processName)
         {
-            if (processList.TryGetValue(processName, out Process process))
+            if (_processList.TryGetValue(processName, out Process? process))
             {
                 try
                 {
@@ -98,7 +102,7 @@ namespace LaravelLauncher
                 }
                 finally
                 {
-                    processList.Remove(processName); // Remove the process from the list
+                    _processList.Remove(processName); // Remove the process from the list
                 }
             }
             else
@@ -110,19 +114,19 @@ namespace LaravelLauncher
 
         private void StartAllProcesses()
         {
-            RunCommandInNewWindow("cd " + projectPath + " && php artisan serve", "php");
+            RunCommandInNewWindow("cd " + _projectPath + " && php artisan serve", "php");
 
             if (taskWorkCheckbox.IsChecked == true)
             {
-                RunCommandInNewWindow("cd " + projectPath + " && php artisan schedule:work", "tasks");
+                RunCommandInNewWindow("cd " + _projectPath + " && php artisan schedule:work", "tasks");
             }
             if (npmCheckbox.IsChecked == true)
             {
-                RunCommandInNewWindow("cd " + projectPath + " && npm run dev", "npm");
+                RunCommandInNewWindow("cd " + _projectPath + " && npm run dev", "npm");
             }
             if (yarnCheckbox.IsChecked == true)
             {
-                RunCommandInNewWindow("cd " + projectPath + " && yarn run dev", "yarn");
+                RunCommandInNewWindow("cd " + _projectPath + " && yarn run dev", "yarn");
             }
         }
         private void RestartAllProcesses()
@@ -133,7 +137,7 @@ namespace LaravelLauncher
         private void RestartProcess(string processName, string command)
         {
             StopProcess(processName);
-            RunCommandInNewWindow("cd " + projectPath + " && " + command, processName);
+            RunCommandInNewWindow("cd " + _projectPath + " && " + command, processName);
         }
         private void RunCommandInNewWindow(string command, string commandName)
         {
@@ -149,45 +153,42 @@ namespace LaravelLauncher
             if (process != null)
             {
                 Console.WriteLine($"Started process {commandName} with PID: {process.Id}");
-                processList[commandName] = process;
+                _processList[commandName] = process;
 
                 // Set the parent of the command window to the main application window
-                SetParent(process.MainWindowHandle, mainWindowHandle);
+                SetParent(process.MainWindowHandle, _mainWindowHandle);
             }
         }
+        
+        
         #endregion "Process Management"
-        
-        
-        
-        
-        
         public MainWindow()
         {
             InitializeComponent();
-            
+            this.Closing += MainWindow_Closing;
 
-            mainWindowHandle = new WindowInteropHelper(this).Handle;
+            _mainWindowHandle = new WindowInteropHelper(this).Handle;
             LoadRecentProjects();
             string path = Properties.Settings.Default.ServerPath;
             if (!string.IsNullOrEmpty(path))
             {
-                serverPath = path;
+                _serverPath = path;
                 LocalServerPathLabel.Content = path;
             }
             else
             {
-                LocalServerPathLabel.Content = "Aucun serveur local sélectionné";
+                LocalServerPathLabel.Content = "";
             }
 
             DispatcherTimer timer = new DispatcherTimer
             {
                 Interval = TimeSpan.FromSeconds(5)
             };
-            timer.Tick += (sender, e) => UpdateButtonState();
+            timer.Tick += (_, _) => UpdateButtonState();
             timer.Start();
             UpdateButtonState();
 
-            if (string.IsNullOrEmpty(projectPath))
+            if (string.IsNullOrEmpty(_projectPath))
             {
                 StartProjectBtn.IsEnabled = false;
             }
@@ -198,7 +199,7 @@ namespace LaravelLauncher
 
             using (Stream iconStream = Application.GetResourceStream(new Uri("pack://application:,,,/Assets/images.ico"))!.Stream)
             {
-                notifyIcon = new NotifyIcon
+                _notifyIcon = new NotifyIcon
                 {
                     Icon = new Icon(iconStream),
                     Visible = true,
@@ -207,139 +208,115 @@ namespace LaravelLauncher
             }
 
             var runningMenuItem = new ToolStripMenuItem("Running");
-            runningMenuItem.DropDownItems.Add(new ToolStripMenuItem("Stop All Processes", null, (s, e) => StopAllProcesses()));
-            /*runningMenuItem.DropDownItems.Add(new ToolStripMenuItem("Stop npm", null, (s, e) => StopProcess("npm", "npm run dev")));
-            runningMenuItem.DropDownItems.Add(new ToolStripMenuItem("Stop yarn", null, (s, e) => StopProcess("yarn", "yarn run dev")));
-            runningMenuItem.DropDownItems.Add(new ToolStripMenuItem("Stop Tasks", null, (s, e) => StopProcess("tasks", "php artisan schedule:work")));*/
-            runningMenuItem.DropDownItems.Add(new ToolStripMenuItem("Stop developpment env", null, (s, e) => StopServer(System.IO.Path.GetFileNameWithoutExtension(serverPath))));
-            /*runningMenuItem.DropDownItems.Add(new ToolStripMenuItem("Stop php artisan serve", null, (s, e) => StopProcess("php", "php artisan serve")));*/
+            runningMenuItem.DropDownItems.Add(new ToolStripMenuItem("Stop All Processes", null, (_, _) => StopAllProcesses()));
+            runningMenuItem.DropDownItems.Add(new ToolStripMenuItem("Stop npm", null, (_, _) => StopProcess("npm")));
+            runningMenuItem.DropDownItems.Add(new ToolStripMenuItem("Stop yarn", null, (_, _) => StopProcess("yarn")));
+            runningMenuItem.DropDownItems.Add(new ToolStripMenuItem("Stop Tasks", null, (_, _) => StopProcess("tasks")));
+            runningMenuItem.DropDownItems.Add(new ToolStripMenuItem("Stop developpment env", null, (_, _) => StopServer(System.IO.Path.GetFileNameWithoutExtension(_serverPath))));
+            runningMenuItem.DropDownItems.Add(new ToolStripMenuItem("Stop php artisan serve", null, (_, _) => StopProcess("php")));
 
             var restartMenuItem = new ToolStripMenuItem("Restart");
-            restartMenuItem.DropDownItems.Add(new ToolStripMenuItem("Restart All Processes", null, (s, e) => RestartAllProcesses()));
-            /*restartMenuItem.DropDownItems.Add(new ToolStripMenuItem("Restart npm", null, (s, e) => RestartProcess("npm", "npm run dev")));
-            restartMenuItem.DropDownItems.Add(new ToolStripMenuItem("Restart yarn", null, (s, e) => RestartProcess("yarn", "yarn run dev")));
-            restartMenuItem.DropDownItems.Add(new ToolStripMenuItem("Restart Tasks", null, (s, e) => RestartProcess("tasks", "php artisan schedule:work")));*/
-            restartMenuItem.DropDownItems.Add(new ToolStripMenuItem("Restart developpment env", null, (s, e) => RestartServer()));
-            /*restartMenuItem.DropDownItems.Add(new ToolStripMenuItem("Restart php artisan serve", null, (s, e) => RestartProcess("php", "php artisan serve")));*/
+            restartMenuItem.DropDownItems.Add(new ToolStripMenuItem("Restart All Processes", null, (_, _) => RestartAllProcesses()));
+            restartMenuItem.DropDownItems.Add(new ToolStripMenuItem("Restart npm", null, (_, _) => RestartProcess("npm", "npm run dev")));
+            restartMenuItem.DropDownItems.Add(new ToolStripMenuItem("Restart yarn", null, (_, _) => RestartProcess("yarn", "yarn run dev")));
+            restartMenuItem.DropDownItems.Add(new ToolStripMenuItem("Restart Tasks", null, (_, _) => RestartProcess("tasks", "php artisan schedule:work")));
+            restartMenuItem.DropDownItems.Add(new ToolStripMenuItem("Restart developpment env", null, (_, _) => RestartServer()));
+            restartMenuItem.DropDownItems.Add(new ToolStripMenuItem("Restart php artisan serve", null, (_, _) => RestartProcess("php", "php artisan serve")));
 
-            notifyIcon.ContextMenuStrip.Items.Add(new ToolStripMenuItem("Restore", null, (s, e) => RestoreFromTray()));
-            notifyIcon.ContextMenuStrip.Items.Add(runningMenuItem);
-            notifyIcon.ContextMenuStrip.Items.Add(restartMenuItem);
-            notifyIcon.ContextMenuStrip.Items.Add(new ToolStripMenuItem("Exit", null, (s, e) => System.Windows.Application.Current.Shutdown()));
+            _notifyIcon.ContextMenuStrip.Items.Add(new ToolStripMenuItem("Restore", null, (_, _) => RestoreFromTray()));
+            _notifyIcon.ContextMenuStrip.Items.Add(runningMenuItem);
+            _notifyIcon.ContextMenuStrip.Items.Add(restartMenuItem);
+            _notifyIcon.ContextMenuStrip.Items.Add(new ToolStripMenuItem("Exit", null, (_, _) => System.Windows.Application.Current.Shutdown()));
             SetLanguage(Properties.Settings.Default.Language ?? "en");
         }
         
+        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (_processList.Count > 0)
+            {
+                // Prompt the user about running processes
+                var result = System.Windows.MessageBox.Show(
+                    "There are still running processes. Do you want to terminate them?",
+                    "Confirm Exit",
+                    MessageBoxButton.YesNoCancel,
+                    MessageBoxImage.Question);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    // Stop all processes and then close the app
+                    StopAllProcesses();
+                    // Allow the closing event to proceed
+                }
+                else if (result == MessageBoxResult.No)
+                {
+                    Console.WriteLine("App closed, but processes are still running.");
+                }
+                else if (result == MessageBoxResult.Cancel)
+                {
+                    // Cancel the closing event
+                    e.Cancel = true;
+                }
+            }
+        }
+        
+        #region Language
         private void SetLanguage(string cultureCode)
         {
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cultureCode);
-            resourceManager = new ResourceManager("LaravelLauncher.Resources.Strings", typeof(MainWindow).Assembly);
-            UpdateUI();
+            _resourceManager = new ResourceManager("LaravelLauncher.Resources.Strings", typeof(MainWindow).Assembly);
+            UpdateUi();
             UpdateTrayMenu();
         }
         
-        private void UpdateUI()
+        private void UpdateUi()
         {
-            NomProjetLabel.Content = resourceManager.GetString("ProjectTitle");
-            CheminProjetLabel.Content = resourceManager.GetString("ProjectPath");
-            FileSelectBtn.Content = resourceManager.GetString("SelectFolder");
-            StartLocalServerBtn.Content = resourceManager.GetString("StartDevEnv");
-            StartProjectBtn.Content = resourceManager.GetString("LaunchProject");
-            OptionsTitleLabel.Content = resourceManager.GetString("LaunchOptions");
-            npmCheckbox.Content = resourceManager.GetString("LaunchNpm");
-            yarnCheckbox.Content = resourceManager.GetString("LaunchYarn");
-            taskWorkCheckbox.Content = resourceManager.GetString("StartScheduledTasks");
-            LocalServerPathLabel.Content = resourceManager.GetString("LocalServerPath");
+            NomProjetLabel.Content = _resourceManager.GetString("ProjectTitle");
+            CheminProjetLabel.Content = _resourceManager.GetString("ProjectPath");
+            FileSelectBtn.Content = _resourceManager.GetString("SelectFolder");
+            StartLocalServerLabel.Text = _resourceManager.GetString("StartDevEnv");
+            StartProjectBtn.Content = _resourceManager.GetString("LaunchProject");
+            OptionsTitleLabel.Content = _resourceManager.GetString("LaunchOptions");
+            npmCheckbox.Content = _resourceManager.GetString("LaunchNpm");
+            yarnCheckbox.Content = _resourceManager.GetString("LaunchYarn");
+            taskWorkCheckbox.Content = _resourceManager.GetString("StartScheduledTasks");
+            LocalServerPathLabel.Content = _resourceManager.GetString("LocalServerPath");
+            LocalServerPathLabel.Content = _resourceManager.GetString(_serverPath != null ? "LocalServerPath" : "UnsetLocalServerPath");
         }
         
         private void UpdateTrayMenu()
         {
-            notifyIcon.ContextMenuStrip?.Items.Clear();
+            _notifyIcon.ContextMenuStrip?.Items.Clear();
 
-            var runningMenuItem = new ToolStripMenuItem(resourceManager.GetString("TrayMenuStopAllProcesses"));
-            runningMenuItem.DropDownItems.Add(new ToolStripMenuItem(resourceManager.GetString("TrayMenuStopDevEnv"), null, (s, e) => StopServer(System.IO.Path.GetFileNameWithoutExtension(serverPath))));
-
-            var restartMenuItem = new ToolStripMenuItem(resourceManager.GetString("TrayMenuRestartAllProcesses"));
-            restartMenuItem.DropDownItems.Add(new ToolStripMenuItem(resourceManager.GetString("TrayMenuRestartDevEnv"), null, (s, e) => RestartServer()));
-
-            notifyIcon.ContextMenuStrip?.Items.Add(new ToolStripMenuItem(resourceManager.GetString("TrayMenuRestore"), null, (s, e) => RestoreFromTray()));
-            notifyIcon.ContextMenuStrip?.Items.Add(runningMenuItem);
-            notifyIcon.ContextMenuStrip?.Items.Add(restartMenuItem);
-            notifyIcon.ContextMenuStrip?.Items.Add(new ToolStripMenuItem(resourceManager.GetString("TrayMenuExit"), null, (s, e) => Application.Current.Shutdown()));
+            var runningMenuItem = new ToolStripMenuItem(_resourceManager.GetString("ActiveProcesses"));
+            runningMenuItem.DropDownItems.Add(new ToolStripMenuItem(_resourceManager.GetString("TrayMenuStopAllProcesses"), null, (_, _) => StopAllProcesses()));
+            runningMenuItem.DropDownItems.Add(new ToolStripMenuItem(_resourceManager.GetString("TrayMenuStopDevEnv"), null, (_, _) => StopServer(System.IO.Path.GetFileNameWithoutExtension(_serverPath))));
+            
+            // Additional process management items
+            runningMenuItem.DropDownItems.Add(new ToolStripMenuItem(_resourceManager.GetString("TrayMenuStopNpm"), null, (_, _) => StopProcess("npm")));
+            runningMenuItem.DropDownItems.Add(new ToolStripMenuItem(_resourceManager.GetString("TrayMenuStopYarn"), null, (_, _) => StopProcess("yarn")));
+            runningMenuItem.DropDownItems.Add(new ToolStripMenuItem(_resourceManager.GetString("TrayMenuStopTasks"), null, (_, _) => StopProcess("tasks")));
+            
+            var restartMenuItem = new ToolStripMenuItem(_resourceManager.GetString("TrayMenuRestartAllProcesses"));
+            restartMenuItem.DropDownItems.Add(new ToolStripMenuItem(_resourceManager.GetString("TrayMenuRestartDevEnv"), null, (_, _) => RestartServer()));
+            
+            // Additional process management items
+            restartMenuItem.DropDownItems.Add(new ToolStripMenuItem(_resourceManager.GetString("TrayMenuRestartNpm"), null, (_, _) => RestartProcess("npm", "npm run dev")));
+            restartMenuItem.DropDownItems.Add(new ToolStripMenuItem(_resourceManager.GetString("TrayMenuRestartYarn"), null, (_, _) => RestartProcess("yarn", "yarn run dev")));
+            restartMenuItem.DropDownItems.Add(new ToolStripMenuItem(_resourceManager.GetString("TrayMenuRestartTasks"), null, (_, _) => RestartProcess("tasks", "php artisan schedule:work")));
+            
+            _notifyIcon.ContextMenuStrip?.Items.Add(new ToolStripMenuItem(_resourceManager.GetString("TrayMenuRestore"), null, (_, _) => RestoreFromTray()));
+            _notifyIcon.ContextMenuStrip?.Items.Add(runningMenuItem);
+            _notifyIcon.ContextMenuStrip?.Items.Add(restartMenuItem);
+            _notifyIcon.ContextMenuStrip?.Items.Add(new ToolStripMenuItem(_resourceManager.GetString("TrayMenuExit"), null, (_, _) => Application.Current.Shutdown()));
         }
 
-        private void LoadRecentProjects()
-        {
-            var settings = SettingsManager.LoadSettings();
-            RecentProjectsList.Items.Clear();
-            folderNameToPathMap.Clear();
+        #endregion
 
-            foreach (var folderPath in SettingsManager.GetProjectPaths())
-            {
-                string folderName = System.IO.Path.GetFileName(folderPath);
-                RecentProjectsList.Items.Add(new ListBoxItem { Content = folderName });
-                folderNameToPathMap[folderName] = folderPath;
-            }
-        }
-
-        private void LoadProjectSettings(string projectPath)
-        {
-            var settings = SettingsManager.LoadSettings();
-            var projectSettings = settings.Projects.FirstOrDefault(p => p.Path == projectPath);
-
-            if (projectSettings != null)
-            {
-                npmCheckbox.IsChecked = projectSettings.UseNpm;
-                yarnCheckbox.IsChecked = projectSettings.UseYarn;
-                taskWorkCheckbox.IsChecked = projectSettings.startTasks;
-                StartProjectBtn.IsEnabled = true;
-            }
-        }
-
-        private void UpdateProjectSettings(string projectPath, bool useNpm, bool useYarn, bool startTasks)
-        {
-            var settings = SettingsManager.LoadSettings();
-            var projectSettings = settings.Projects.FirstOrDefault(p => p.Path == projectPath);
-
-            if (projectSettings == null)
-            {
-                projectSettings = new ProjectSettings { Path = projectPath };
-                settings.Projects.Add(projectSettings);
-            }
-
-            projectSettings.UseNpm = useNpm;
-            projectSettings.UseYarn = useYarn;
-            projectSettings.startTasks = startTasks;
-
-            SettingsManager.SaveSettings(settings);
-        }
-
-        private void SelectProjectPath_Click(object sender, RoutedEventArgs e)
-        {
-            using (var dialog = new FolderBrowserDialog())
-            {
-                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                {
-                    string selectedPath = dialog.SelectedPath;
-
-                    var settings = SettingsManager.LoadSettings();
-                    var projects = SettingsManager.GetProjectPaths();
-
-                    if (!SettingsManager.GetProjectPaths().Contains(selectedPath))
-                    {
-                        projects.Add(selectedPath);
-                        SettingsManager.SaveSettings(settings);
-                        projectPath = dialog.SelectedPath;
-                        NomProjetLabel.Content = System.IO.Path.GetFileName(projectPath);
-                        CheminProjetLabel.Content = projectPath;
-                        LoadRecentProjects();
-                    }
-                }
-            }
-        }
+        #region DevEnv
 
         private void StartLocalServer()
         {
-            string executableName = System.IO.Path.GetFileNameWithoutExtension(serverPath);
+            string executableName = System.IO.Path.GetFileNameWithoutExtension(_serverPath);
             bool processIsRunning = IsProcessRunning(executableName);
 
             if (processIsRunning)
@@ -350,7 +327,7 @@ namespace LaravelLauncher
             {
                 try
                 {
-                    string executablePath = serverPath;
+                    string executablePath = _serverPath;
 
                     if (!string.IsNullOrEmpty(executablePath))
                     {
@@ -378,83 +355,50 @@ namespace LaravelLauncher
 
         private void RestartServer()
         {
-            StopServer(System.IO.Path.GetFileNameWithoutExtension(serverPath));
+            StopServer(System.IO.Path.GetFileNameWithoutExtension(_serverPath));
             StartLocalServer();
         }
         
-        
+        private bool IsProcessRunning(string processName)
+        {
+            Process[] processes = Process.GetProcessesByName(processName);
+            return processes.Length > 0;
+        }
+
+        private void UpdateButtonState()
+        {
+            if (string.IsNullOrEmpty(_serverPath))
+            {
+                Console.WriteLine("serverPath is null or empty.");
+                StartLocalServerBtn.IsEnabled = true;
+                StartLocalServerBtn.Content = "Environnement de développement hors-ligne (Cliquez pour le lancer)";
+                StartLocalServerBtn.Background = new SolidColorBrush(Colors.Red);
+                return;
+            }
+
+            string executableName = System.IO.Path.GetFileNameWithoutExtension(_serverPath);
+            bool processIsRunning = IsProcessRunning(executableName);
+
+            if (processIsRunning)
+            {
+                Console.WriteLine("Process is running.");
+                StartLocalServerBtn.IsEnabled = true;
+                StartLocalServerLabel.Text = _resourceManager?.GetString("StopDevEnv") ?? "Stop Development Env"; // Added null check
+                StartLocalServerBtn.Background = new SolidColorBrush(Colors.Green);
+            }
+            else
+            {
+                Console.WriteLine("Process is not running.");
+                StartLocalServerBtn.IsEnabled = true;
+                StartLocalServerLabel.Text = _resourceManager?.GetString("StartDevEnv") ?? "Start Development Env"; // Added null check
+                StartLocalServerBtn.Background = new SolidColorBrush(Colors.Red);
+            }
+        }
         
         private void StartLocalServerBtn_Click(object sender, RoutedEventArgs e)
-        {
-            StartLocalServer();
-        }
-
-        
-        
-        /*private void RunCommandInNewWindow(string command, string commandName)
-        {
-            if (PIDList == null)
-            {
-                PIDList = new Dictionary<string, int>();
-            }
-
-            ProcessStartInfo startInfo = new ProcessStartInfo("cmd.exe", "/c " + command)
-            {
-                UseShellExecute = true,
-                CreateNoWindow = false,
-                WindowStyle = ProcessWindowStyle.Normal
-            };
-            var process = Process.Start(startInfo);
-            if (process != null)
-            {
-                Console.WriteLine($"Started process {commandName} with PID: {process.Id}");
-                PIDList[commandName] = process.Id;
-
-                // Set the parent of the command window to the main application window
-                SetParent(process.MainWindowHandle, mainWindowHandle);
-            }
-        }*/
-
-        private void StartProjectBtn_Click(object sender, RoutedEventArgs e)
-        {
-            Console.WriteLine("Lancement du projet");
-
-            startTasks = taskWorkCheckbox.IsChecked == true;
-            startNpm = npmCheckbox.IsChecked == true;
-            startYarn = yarnCheckbox.IsChecked == true;
-
-            UpdateProjectSettings(projectPath, startNpm, startYarn, startTasks);
-
-            RunCommandInNewWindow("cd " + projectPath + " && php artisan serve", "php");
-
-            if (taskWorkCheckbox.IsChecked == true)
-            {
-                RunCommandInNewWindow("cd " + projectPath + " && php artisan schedule:work", "tasks");
-            }
-            if (npmCheckbox.IsChecked == true)
-            {
-                RunCommandInNewWindow("cd " + projectPath + " && npm run dev", "npm");
-            }
-            if (yarnCheckbox.IsChecked == true)
-            {
-                RunCommandInNewWindow("cd " + projectPath + " && yarn run dev", "yarn");
-            }
-
-            MinimizeToTray();
-        }
-
-        private void MinimizeToTray()
-        {
-            notifyIcon.Visible = true;
-            this.Hide();
-        }
-
-        private void RestoreFromTray()
-        {
-            notifyIcon.Visible = false;
-            this.Show();
-            this.WindowState = WindowState.Normal;
-        }
+                {
+                    StartLocalServer();
+                }
 
         protected override void OnStateChanged(EventArgs e)
         {
@@ -464,72 +408,156 @@ namespace LaravelLauncher
                 MinimizeToTray();
             }
         }
-
-        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        
+        private void StopServer(string processName)
         {
-            notifyIcon.Dispose();
-            base.OnClosing(e);
+            Process[] processes = Process.GetProcessesByName(processName);
+            foreach (var process in processes)
+            {
+                process.Kill();
+                process.WaitForExit();
+            }
+        }
+        
+        #endregion
+
+        #region Tray Management
+
+        private void MinimizeToTray()
+                {
+                    _notifyIcon.Visible = true;
+                    this.Hide();
+                }
+        
+                private void RestoreFromTray()
+                {
+                    _notifyIcon.Visible = false;
+                    this.Show();
+                    this.WindowState = WindowState.Normal;
+                }
+        
+                protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+                {
+                    _notifyIcon.Dispose();
+                    base.OnClosing(e);
+                }
+
+        #endregion
+
+        #region Projects
+        private void LoadRecentProjects()
+        {
+            var settings = SettingsManager.LoadSettings();
+            RecentProjectsList.Items.Clear();
+            _folderNameToPathMap.Clear();
+
+            foreach (var folderPath in SettingsManager.GetProjectPaths())
+            {
+                string folderName = System.IO.Path.GetFileName(folderPath);
+                RecentProjectsList.Items.Add(new ListBoxItem { Content = folderName });
+                _folderNameToPathMap[folderName] = folderPath;
+            }
         }
 
+        private void LoadProjectSettings(string projectPath)
+        {
+            var settings = SettingsManager.LoadSettings();
+            var projectSettings = settings.Projects.FirstOrDefault(p => p.Path == projectPath);
+
+            if (projectSettings != null)
+            {
+                npmCheckbox.IsChecked = projectSettings.UseNpm;
+                yarnCheckbox.IsChecked = projectSettings.UseYarn;
+                taskWorkCheckbox.IsChecked = projectSettings.startTasks;
+                StartProjectBtn.IsEnabled = true;
+            }
+        }
+
+        private void UpdateProjectSettings(string selectedProjectPath, bool useNpm, bool useYarn, bool useStartTasks)
+        {
+            var settings = SettingsManager.LoadSettings();
+            var projectSettings = settings.Projects.FirstOrDefault(p => p.Path == this._projectPath);
+
+            if (projectSettings == null)
+            {
+                projectSettings = new ProjectSettings { Path = this._projectPath };
+                settings.Projects.Add(projectSettings);
+            }
+
+            projectSettings.UseNpm = useNpm;
+            projectSettings.UseYarn = useYarn;
+            projectSettings.startTasks = useStartTasks;
+
+            SettingsManager.SaveSettings(settings);
+        }
+
+        private void SelectProjectPath_Click(object sender, RoutedEventArgs e)
+        {
+            using (var dialog = new FolderBrowserDialog())
+            {
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    string selectedPath = dialog.SelectedPath;
+
+                    var settings = SettingsManager.LoadSettings();
+                    var projects = SettingsManager.GetProjectPaths();
+
+                    if (!SettingsManager.GetProjectPaths().Contains(selectedPath))
+                    {
+                        projects.Add(selectedPath);
+                        SettingsManager.SaveSettings(settings);
+                        _projectPath = dialog.SelectedPath;
+                        NomProjetLabel.Content = System.IO.Path.GetFileName(_projectPath);
+                        CheminProjetLabel.Content = _projectPath;
+                        LoadRecentProjects();
+                    }
+                }
+            }
+        }
+        private void StartProjectBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine("Lancement du projet");
+
+            _startTasks = taskWorkCheckbox.IsChecked == true;
+            _startNpm = npmCheckbox.IsChecked == true;
+            _startYarn = yarnCheckbox.IsChecked == true;
+
+            UpdateProjectSettings(_projectPath, _startNpm, _startYarn, _startTasks);
+
+            RunCommandInNewWindow("cd " + _projectPath + " && php artisan serve", "php");
+
+            if (taskWorkCheckbox.IsChecked == true)
+            {
+                RunCommandInNewWindow("cd " + _projectPath + " && php artisan schedule:work", "tasks");
+            }
+            if (npmCheckbox.IsChecked == true)
+            {
+                RunCommandInNewWindow("cd " + _projectPath + " && npm run dev", "npm");
+            }
+            if (yarnCheckbox.IsChecked == true)
+            {
+                RunCommandInNewWindow("cd " + _projectPath + " && yarn run dev", "yarn");
+            }
+
+            MinimizeToTray();
+        }
+        
         private void RecentProjectsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (RecentProjectsList.SelectedItem is ListBoxItem selectedItem && selectedItem.Content != null)
             {
-                string folderName = selectedItem.Content.ToString();
-                if (folderNameToPathMap.TryGetValue(folderName, out string fullPath))
+                string? folderName = selectedItem.Content.ToString();
+                if (folderName != null && _folderNameToPathMap.TryGetValue(folderName, out string fullPath))
                 {
-                    projectPath = fullPath;
-                    NomProjetLabel.Content = System.IO.Path.GetFileName(projectPath);
-                    CheminProjetLabel.Content = projectPath;
+                    _projectPath = fullPath;
+                    NomProjetLabel.Content = System.IO.Path.GetFileName(_projectPath);
+                    CheminProjetLabel.Content = _projectPath;
                     LoadProjectSettings(fullPath);
                 }
             }
         }
-
-        private bool IsProcessRunning(string processName)
-        {
-            Process[] processes = Process.GetProcessesByName(processName);
-            return processes.Length > 0;
-        }
-
-        private void UpdateButtonState()
-        {
-            if (string.IsNullOrEmpty(serverPath))
-            {
-                StartLocalServerBtn.IsEnabled = true;
-                StartLocalServerBtn.Content = "Environnement de développement hors-ligne (Cliquez pour le lancer)";
-                StartLocalServerBtn.Background = new SolidColorBrush(Colors.Red);
-                return;
-            }
-
-            string executableName = System.IO.Path.GetFileNameWithoutExtension(serverPath);
-            bool processIsRunning = IsProcessRunning(executableName);
-
-            if (processIsRunning)
-            {
-                StartLocalServerBtn.IsEnabled = true;
-                StartLocalServerBtn.Content = "Arrêter l'environnement de développement";
-                StartLocalServerBtn.Background = new SolidColorBrush(Colors.Green);
-            }
-            else
-            {
-                StartLocalServerBtn.IsEnabled = true;
-                StartLocalServerBtn.Content = "Lancer l'environnement de développement";
-                StartLocalServerBtn.Background = new SolidColorBrush(Colors.Red);
-            }
-        }
-
-        private void StopServer(string processName)
-         {
-             Process[] processes = Process.GetProcessesByName(processName);
-             foreach (var process in processes)
-             {
-                 process.Kill();
-                 process.WaitForExit();
-             }
-         }
         
-        
+        #endregion
 
         private void SettingsBtn_Click(object sender, RoutedEventArgs e)
         {

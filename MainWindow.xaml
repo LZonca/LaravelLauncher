@@ -58,7 +58,10 @@
                 <CheckBox x:Name="npmCheckbox" Content="Lancer npm" HorizontalAlignment="Left" Margin="142,153,0,0" VerticalAlignment="Top"  Height="24" Width="228" FontSize="18" VerticalContentAlignment="Center" FontWeight="Bold"/>
                 <CheckBox x:Name="yarnCheckbox" Content="Lancer yarn" HorizontalAlignment="Left" Margin="142,182,0,0" VerticalAlignment="Top"  Height="24" Width="228" FontSize="18" VerticalContentAlignment="Center" FontWeight="Bold"/>
                 <CheckBox x:Name="taskWorkCheckbox" Content="Démarrer les taches programées" HorizontalAlignment="Left" Margin="142,211,0,0" VerticalAlignment="Top"  Height="24" FontSize="18" VerticalContentAlignment="Center" FontWeight="Bold" Width="296"/>
-                <Button x:Name="StartLocalServerBtn" Content="Start developpement env" Margin="220,314,220,0" VerticalAlignment="Top" Height="47" Click="StartLocalServerBtn_Click" FontWeight="Bold" Background="#FFBA2323"/>
+                <Grid Margin="0,309,0,0" VerticalAlignment="Top" HorizontalAlignment="Center" Height="65" Width="282">
+                    <Button x:Name="StartLocalServerBtn" VerticalAlignment="Center" Click="StartLocalServerBtn_Click" FontWeight="Bold" Background="#FFE20A0A" Height="39" HorizontalAlignment="Left" Width="39"/>
+                    <TextBlock Text="Start developpement env" x:Name="StartLocalServerLabel" TextWrapping="Wrap" TextAlignment="Center" Margin="44,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="ROG Fonts" FontWeight="Bold" FontSize="9" />
+                </Grid>
                 <Button x:Name="StartProjectBtn" Content="Lancer le projet" HorizontalAlignment="Center" Margin="0,438,0,0" VerticalAlignment="Top" Height="67" Width="311" Click="StartProjectBtn_Click" FontSize="24" FontWeight="Bold" Background="#FFD8E9A8"/>
                 <Label x:Name="LocalServerPathLabel" Content="Local server path&#xA;" HorizontalAlignment="Center" Margin="0,279,0,0" VerticalAlignment="Top" Height="30" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
             </Grid>
