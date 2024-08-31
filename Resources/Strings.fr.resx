@@ -32,32 +32,32 @@
         <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     </resheader>
     <data name="ProjectTitle" xml:space="preserve">
-    <value>Titre du projet</value>
-  </data>
+        <value>Titre du projet</value>
+    </data>
     <data name="ProjectPath" xml:space="preserve">
-    <value>Chemin du projet</value>
-  </data>
-    <data name="SelectFolder" xml:space="preserve">
-    <value>Sélectionner un dossier</value>
-  </data>
-    <data name="StartDevEnv" xml:space="preserve">
-    <value>Démarrer l'environnement de développement</value>
-  </data>
-    <data name="LaunchProject" xml:space="preserve">
-    <value>Lancer le projet</value>
-  </data>
-    <data name="LaunchOptions" xml:space="preserve">
-    <value>Options de lancement</value>
-  </data>
-    <data name="LaunchNpm" xml:space="preserve">
-    <value>Lancer npm</value>
-  </data>
-    <data name="LaunchYarn" xml:space="preserve">
-    <value>Lancer yarn</value>
-  </data>
-    <data name="StartScheduledTasks" xml:space="preserve">
-    <value>Démarrer les tâches planifiées</value>
-  </data>
+        <value>Chemin du projet</value>
+      </data>
+        <data name="SelectFolder" xml:space="preserve">
+        <value>Sélectionner un dossier</value>
+      </data>
+        <data name="StartDevEnv" xml:space="preserve">
+        <value>Démarrer l'environnement de développement</value>
+      </data>
+        <data name="LaunchProject" xml:space="preserve">
+        <value>Lancer le projet</value>
+      </data>
+        <data name="LaunchOptions" xml:space="preserve">
+        <value>Options de lancement</value>
+      </data>
+        <data name="LaunchNpm" xml:space="preserve">
+        <value>Lancer npm</value>
+      </data>
+        <data name="LaunchYarn" xml:space="preserve">
+        <value>Lancer yarn</value>
+      </data>
+        <data name="StartScheduledTasks" xml:space="preserve">
+        <value>Démarrer les tâches planifiées</value>
+      </data>
     <data name="LocalServerPath" xml:space="preserve">
         <value>Chemin de l'environnement de développement</value>
     </data>
@@ -86,24 +86,48 @@
         <value>Environnement de développement non défini</value>
     </data>
     <data name="TrayMenuStopNpm" xml:space="preserve">
-  <value>Arrêter npm</value>
-</data>
-    <data name="TrayMenuStopYarn" xml:space="preserve">
-  <value>Arrêter yarn</value>
-</data>
-    <data name="TrayMenuStopTasks" xml:space="preserve">
-  <value>Arrêter les tâches</value>
-</data>
-    <data name="TrayMenuRestartNpm" xml:space="preserve">
-  <value>Redémarrer npm</value>
-</data>
-    <data name="TrayMenuRestartYarn" xml:space="preserve">
-  <value>Redémarrer yarn</value>
-</data>
-    <data name="TrayMenuRestartTasks" xml:space="preserve">
-  <value>Redémarrer les tâches</value>
-</data>
-    <data name="ActiveProcesses" xml:space="preserve">
-        <value>Processus actifs</value>
+      <value>Arrêter npm</value>
+    </data>
+        <data name="TrayMenuStopYarn" xml:space="preserve">
+      <value>Arrêter yarn</value>
+    </data>
+        <data name="TrayMenuStopTasks" xml:space="preserve">
+      <value>Arrêter les tâches</value>
+    </data>
+        <data name="TrayMenuRestartNpm" xml:space="preserve">
+      <value>Redémarrer npm</value>
+    </data>
+        <data name="TrayMenuRestartYarn" xml:space="preserve">
+      <value>Redémarrer yarn</value>
+    </data>
+        <data name="TrayMenuRestartTasks" xml:space="preserve">
+      <value>Redémarrer les tâches</value>
+    </data>
+        <data name="ActiveProcesses" xml:space="preserve">
+            <value>Processus actifs</value>
+        </data>
+        <data name="Error" xml:space="preserve">
+        <value>Erreur</value>
+    </data>
+        <data name="UnableToLaunchExecutable" xml:space="preserve">
+        <value>Impossible de lancer l'exécutable</value>
+    </data>
+    <data name="SettingsTitle" xml:space="preserve">
+    <value>Paramètres</value>
+    </data>
+        <data name="SelectExecutable" xml:space="preserve">
+        <value>Sélectionner l'éxécutable</value>
+    </data>
+        <data name="SelectServerPath" xml:space="preserve">
+        <value>Sélectionnez le chemin vers votre système apache</value>
+    </data>
+        <data name="ServerManager" xml:space="preserve">
+        <value>Gestionnaire serveur php (Wamp, Xampp, etc...)</value>
+    </data>
+        <data name="LanguageSettings" xml:space="preserve">
+        <value>Paramètres de langue</value>
+    </data>
+        <data name="ChangeLanguage" xml:space="preserve">
+        <value>Changer de langue</value>
     </data>
 </root>

@@ -31,6 +31,9 @@
     <resheader name="writer">
         <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     </resheader>
+    <data name="AvailableLanguages" xml:space="preserve">
+        <value>en,fr</value>
+    </data>
     <data name="ProjectTitle" xml:space="preserve">
         <value>Project title</value>
     </data>
@@ -86,24 +89,48 @@
         <value>Development evnironement is not set</value>
     </data>
     <data name="TrayMenuStopNpm" xml:space="preserve">
-  <value>Stop npm</value>
-</data>
-    <data name="TrayMenuStopYarn" xml:space="preserve">
-  <value>Stop yarn</value>
-</data>
-    <data name="TrayMenuStopTasks" xml:space="preserve">
-  <value>Stop Tasks</value>
-</data>
-    <data name="TrayMenuRestartNpm" xml:space="preserve">
-  <value>Restart npm</value>
-</data>
-    <data name="TrayMenuRestartYarn" xml:space="preserve">
-  <value>Restart yarn</value>
-</data>
-    <data name="TrayMenuRestartTasks" xml:space="preserve">
-  <value>Restart Tasks</value>
-</data>
+      <value>Stop npm</value>
+    </data>
+        <data name="TrayMenuStopYarn" xml:space="preserve">
+      <value>Stop yarn</value>
+    </data>
+        <data name="TrayMenuStopTasks" xml:space="preserve">
+      <value>Stop Tasks</value>
+    </data>
+        <data name="TrayMenuRestartNpm" xml:space="preserve">
+      <value>Restart npm</value>
+    </data>
+        <data name="TrayMenuRestartYarn" xml:space="preserve">
+      <value>Restart yarn</value>
+    </data>
+        <data name="TrayMenuRestartTasks" xml:space="preserve">
+      <value>Restart Tasks</value>
+    </data>
     <data name="ActiveProcesses" xml:space="preserve">
         <value>Active processes</value>
+    </data>
+    <data name="Error" xml:space="preserve">
+        <value>Error</value>
+    </data>
+    <data name="UnableToLaunchExecutable" xml:space="preserve">
+        <value>Unable to launch executable</value>
+    </data>
+    <data name="SettingsTitle" xml:space="preserve">
+        <value>Settings</value>
+    </data>
+        <data name="SelectExecutable" xml:space="preserve">
+        <value>Select executable</value>
+    </data>
+        <data name="SelectServerPath" xml:space="preserve">
+        <value>Select the path to your Apache system</value>
+    </data>
+        <data name="ServerManager" xml:space="preserve">
+        <value>PHP server manager (Wamp, Xampp, etc...)</value>
+    </data>
+        <data name="LanguageSettings" xml:space="preserve">
+        <value>Language settings</value>
+    </data>
+        <data name="ChangeLanguage" xml:space="preserve">
+        <value>Change language</value>
     </data>
 </root>

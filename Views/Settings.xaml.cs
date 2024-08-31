@@ -1,36 +1,54 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using Microsoft.Win32;
-
-
+using System.Globalization;
+using System.Resources;
 
 namespace LaravelLauncher
 {
-    /// <summary>
-    /// Logique d'interaction pour Settings.xaml
-    /// </summary>
     public partial class Settings : Window
     {
+        private ResourceManager _resourceManager;
+
         public Settings()
         {
             InitializeComponent();
+            _resourceManager = new ResourceManager("LaravelLauncher.Resources.Strings", typeof(Settings).Assembly);
             LoadServerExecutablePath();
+            LoadAvailableLanguages();
         }
+
+        private void LoadAvailableLanguages()
+        {
+            string languages = _resourceManager.GetString("AvailableLanguages") ?? throw new InvalidOperationException();
+            if (!string.IsNullOrEmpty(languages))
+            {
+                var languageList = languages.Split(',');
+                foreach (var lang in languageList)
+                {
+                    var culture = new CultureInfo(lang);
+                    languageSelector.Items.Add(culture.Name);
+                }
+            }
+        }
+
+        private void languageChangeBtn_Click(object sender, RoutedEventArgs e)
+        {
+            string? selectedLanguage = languageSelector.SelectedItem?.ToString();
+            if (selectedLanguage != null)
+            {
+                CultureInfo culture = new CultureInfo(selectedLanguage);
+                Properties.Settings.Default.Language = culture.Name;
+            }
+
+            Properties.Settings.Default.Save();
+            MessageBox.Show(_resourceManager.GetString("RestartApp"));
+        }
+
         private void SaveExecutablePath(string path)
         {
             Properties.Settings.Default.ServerPath = path;
-            Properties.Settings.Default.Save(); // Sauvegarde les modifications
+            Properties.Settings.Default.Save();
         }
 
         public void LoadServerExecutablePath()
@@ -47,33 +65,23 @@ namespace LaravelLauncher
             }
         }
 
-        
-
-
-
         private void OpenFileSystemBtn_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
                 Filter = "Executable files (*.exe)|*.exe",
-                Title = "Sélectionnez un fichier exécutable"
+                Title = _resourceManager.GetString("SelectExecutable")
             };
 
             bool? result = openFileDialog.ShowDialog();
 
             if (result == true)
             {
-                // Chemin d'accès au fichier sélectionné
                 string selectedFilePath = openFileDialog.FileName;
-                // Sauvegarde le chemin d'accès dans les préférences utilisateur
                 SaveExecutablePath(selectedFilePath);
                 pathToExecLabel.Content = selectedFilePath;
             }
         }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
+        
     }
 }

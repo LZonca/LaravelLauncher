@@ -5,24 +5,35 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LaravelLauncher"
         mc:Ignorable="d"
-        Title="Settings" Height="393" Width="363">
-    <Grid x:Name="MainGrid" Background="#FF1E5128">
-        <Label x:Name="SettingsTitle" Content="Paramètres" HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top" FontSize="20" FontWeight="Bold" Foreground="#FFAB7E00"/>
-        <Grid HorizontalAlignment="Center" Height="181" Margin="0,92,0,0" VerticalAlignment="Top" Width="373">
-            <Button x:Name="OpenFileSystembtn" Content="Sélectionner l'éxécutable" HorizontalAlignment="Center" Margin="0,117,0,0" VerticalAlignment="Top" Click="OpenFileSystemBtn_Click" Height="40" Width="138" Background="#FFD8E9A8"/>
-            <Label x:Name="pathToExecLabel" Content="Sélectionnez le chemin vers votre système apache" HorizontalAlignment="Center" VerticalAlignment="Center" Height="26" Width="353" HorizontalContentAlignment="Center" FontWeight="Bold"/>
-            <Label Content="Gestionnaire serveur php (Wamp, Xampp, etc...)" HorizontalAlignment="Center" VerticalAlignment="Top" FontWeight="Bold" FontFamily="Arial Black" Height="26" Width="373" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,21,0,0"/>
+        Title="Settings" Height="417" Width="371">
+    <ScrollViewer x:Name="MainGrid" Background="#FF1E5128">
+        <Grid>
+            <Label x:Name="SettingsTitle" Content="Paramètres" HorizontalAlignment="Left" Margin="124,10,0,0" VerticalAlignment="Top" FontSize="20" FontWeight="Bold" Foreground="#FFAB7E00"/>
+            <Grid HorizontalAlignment="Left" Margin="-4,68,0,0" VerticalAlignment="Top" Width="358" Background="#FF4E9F3D" Height="194">
+                <Button x:Name="OpenFileSystembtn" HorizontalAlignment="Center" Margin="0,115,0,0" VerticalAlignment="Top" Click="OpenFileSystemBtn_Click" Height="40" Width="138" Background="#FFD8E9A8">
+                    <TextBlock TextWrapping="Wrap" Text="Sélectionner l'éxécutable" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Button>
+                <Label x:Name="pathToExecLabel" Content="Sélectionnez le chemin vers votre système apache" HorizontalAlignment="Center" VerticalAlignment="Center" Height="26" Width="353" HorizontalContentAlignment="Center" FontWeight="Bold"/>
+                <Label Content="Gestionnaire serveur php (Wamp, Xampp, etc...)" HorizontalAlignment="Center" VerticalAlignment="Top" FontWeight="Bold" FontFamily="Arial Black" Height="26" Width="373" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,21,0,0"/>
+
+            </Grid>
+            <Grid HorizontalAlignment="Center" Height="118" Margin="0,273,0,0" VerticalAlignment="Top" Width="354" Background="#FF4E9F3D">
+                <Label Content="Language settings" HorizontalAlignment="Center" Margin="0,5,0,10.1" VerticalAlignment="Top"/>
+                <ComboBox x:Name="languageSelector" HorizontalAlignment="Center" VerticalAlignment="Top" Width="114" Margin="0,36,0,0" BorderBrush="#FFD8E9A8">
+                    <ComboBox.Background>
+                        <LinearGradientBrush EndPoint="0,1">
+                            <GradientStop Color="#FFF0F0F0"/>
+                            <GradientStop Color="#FFD8E9A8" Offset="1"/>
+                        </LinearGradientBrush>
+                    </ComboBox.Background>
+                </ComboBox>
+                <Button HorizontalAlignment="Center" VerticalAlignment="Top" Click="languageChangeBtn_Click" Height="24" Width="114" Margin="0,65,0,10" Background="#FFD8E9A8">
+                    <Grid Height="18" Width="99">
+                        <TextBox x:Name="languageChangeBtn" Text="Change language" TextWrapping="Wrap" Background="#FFD8E9A8" BorderBrush="{x:Null}" SelectionTextBrush="#FFD8E9A8"/>
+                    </Grid>
+                </Button>
+            </Grid>
 
         </Grid>
-        <Grid HorizontalAlignment="Center" Height="104" Margin="0,273,0,0" VerticalAlignment="Top" Width="364">
-            <Label Content="Language settings&#xA;" HorizontalAlignment="Center" Margin="0,-5,0,0" VerticalAlignment="Top"/>
-            <ComboBox x:Name="languageSelector" HorizontalAlignment="Center" VerticalAlignment="Top" Width="114" Margin="0,30,0,0"/>
-            <Button HorizontalAlignment="Center" VerticalAlignment="Top" Click="Button_Click" Height="24" Width="114" Margin="0,65,0,0">
-                <Grid Height="18" Width="99">
-                    <TextBox x:Name="languageChange" Text="Change language" TextWrapping="Wrap" Background="{x:Null}" BorderBrush="{x:Null}"/>
-                </Grid>
-            </Button>
-        </Grid>
-
-    </Grid>
+    </ScrollViewer>
 </Window>
