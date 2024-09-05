@@ -49,21 +49,21 @@
             </Grid.ColumnDefinitions>
             <Grid x:Name="SelectionGrid" HorizontalAlignment="Center" Height="578" VerticalAlignment="Center" Width="595" Background="#1E5128">
                 <ListBox x:Name="RecentProjectsList" Background="#4E9F3D" HorizontalAlignment="Right" Width="450" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="0,152,73,153" SelectionChanged="RecentProjectsList_SelectionChanged"/>
-                <Label x:Name="NomProjetLabel" Content="Titre du projet" HorizontalAlignment="Center" VerticalAlignment="Top" Height="41" Width="692" FontSize="24" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="0,23,0,0"/>
-                <Label x:Name="CheminProjetLabel" Content="Chemin du projet" HorizontalAlignment="Center" Margin="0,64,0,0" VerticalAlignment="Top" Height="31" Width="590" HorizontalContentAlignment="Center"/>
+                <Label x:Name="NomProjetLabel" Content="Titre du projet" HorizontalAlignment="Center" VerticalAlignment="Top" Height="41" Width="450" FontSize="24" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="0,23,0,0" FontFamily="Verdana"/>
+                <Label x:Name="CheminProjetLabel" Content="Chemin du projet" HorizontalAlignment="Center" Margin="0,64,0,0" VerticalAlignment="Top" Height="31" Width="450" HorizontalContentAlignment="Center" FontFamily="Verdana"/>
                 <Button x:Name="FileSelectBtn" Content="Sélectionner un dossier" HorizontalAlignment="Center" Margin="0,100,0,0" VerticalAlignment="Top" Height="42" Width="138" Click="SelectProjectPath_Click" FontWeight="Bold" Background="#FFD8E9A8"/>
             </Grid>
             <Grid x:Name="OptionsGrid" Grid.Column="1" HorizontalAlignment="Center" Width="594" Background="#1E5128" Margin="0,0,0,11">
-                <Label x:Name="OptionsTitleLabel" Content="Options de lancement" HorizontalAlignment="Center" Margin="0,20,0,0" VerticalAlignment="Top" Height="44" Width="574" HorizontalContentAlignment="Center" FontSize="24"/>
-                <CheckBox x:Name="npmCheckbox" Content="Lancer npm" HorizontalAlignment="Left" Margin="142,153,0,0" VerticalAlignment="Top"  Height="24" Width="228" FontSize="18" VerticalContentAlignment="Center" FontWeight="Bold"/>
-                <CheckBox x:Name="yarnCheckbox" Content="Lancer yarn" HorizontalAlignment="Left" Margin="142,182,0,0" VerticalAlignment="Top"  Height="24" Width="228" FontSize="18" VerticalContentAlignment="Center" FontWeight="Bold"/>
-                <CheckBox x:Name="taskWorkCheckbox" Content="Démarrer les taches programées" HorizontalAlignment="Left" Margin="142,211,0,0" VerticalAlignment="Top"  Height="24" FontSize="18" VerticalContentAlignment="Center" FontWeight="Bold" Width="296"/>
+                <Label x:Name="OptionsTitleLabel" Content="Options de lancement" HorizontalAlignment="Center" Margin="0,20,0,0" VerticalAlignment="Top" Height="44" Width="574" HorizontalContentAlignment="Center" FontSize="24" FontFamily="Verdana"/>
+                <CheckBox x:Name="npmCheckbox" Content="Lancer npm" HorizontalAlignment="Left" Margin="142,153,0,0" VerticalAlignment="Top"  Height="24" Width="228" VerticalContentAlignment="Center" FontWeight="Bold" FontFamily="Verdana"/>
+                <CheckBox x:Name="yarnCheckbox" Content="Lancer yarn" HorizontalAlignment="Left" Margin="142,182,0,0" VerticalAlignment="Top"  Height="24" Width="228" VerticalContentAlignment="Center" FontWeight="Bold" FontFamily="Verdana"/>
+                <CheckBox x:Name="taskWorkCheckbox" Content="Démarrer les taches programées" HorizontalAlignment="Left" Margin="142,211,0,0" VerticalAlignment="Top"  Height="24" VerticalContentAlignment="Center" FontWeight="Bold" Width="296" FontFamily="Verdana"/>
                 <Grid Margin="0,309,0,0" VerticalAlignment="Top" HorizontalAlignment="Center" Height="65" Width="282">
                     <Button x:Name="StartLocalServerBtn" VerticalAlignment="Center" Click="StartLocalServerBtn_Click" FontWeight="Bold" Background="#FFE20A0A" Height="39" HorizontalAlignment="Left" Width="39"/>
-                    <TextBlock Text="Start developpement env" x:Name="StartLocalServerLabel" TextWrapping="Wrap" TextAlignment="Center" Margin="44,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="ROG Fonts" FontWeight="Bold" FontSize="9" />
+                    <TextBlock Text="Start developpement env" x:Name="StartLocalServerLabel" TextWrapping="Wrap" TextAlignment="Center" Margin="44,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Verdana" FontWeight="Bold" FontSize="14" />
                 </Grid>
-                <Button x:Name="StartProjectBtn" Content="Lancer le projet" HorizontalAlignment="Center" Margin="0,438,0,0" VerticalAlignment="Top" Height="67" Width="311" Click="StartProjectBtn_Click" FontSize="24" FontWeight="Bold" Background="#FFD8E9A8"/>
-                <Label x:Name="LocalServerPathLabel" Content="Local server path&#xA;" HorizontalAlignment="Center" Margin="0,279,0,0" VerticalAlignment="Top" Height="30" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                <Button x:Name="StartProjectBtn" Content="Lancer le projet" HorizontalAlignment="Center" Margin="0,438,0,0" VerticalAlignment="Top" Height="67" Width="311" Click="StartProjectBtn_Click" FontWeight="Bold" Background="#FFD8E9A8" FontSize="18" FontFamily="Verdana"/>
+                <Label x:Name="LocalServerPathLabel" Content="Local server path&#xA;" HorizontalAlignment="Center" Margin="0,279,0,0" VerticalAlignment="Top" Height="30" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontFamily="Verdana"/>
             </Grid>
         </Grid>
     </Grid>

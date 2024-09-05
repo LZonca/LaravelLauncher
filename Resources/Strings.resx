@@ -61,20 +61,20 @@
     <data name="StartScheduledTasks" xml:space="preserve">
         <value>Run scheduled tasks</value>
     </data>
-    <data name="LocalServerPath" xml:space="preserve">
+    <data name="DevEnvPath" xml:space="preserve">
         <value>Development environment path</value>
     </data>
     <data name="TrayMenuRestore" xml:space="preserve">
       <value>Restore</value>
     </data>
-        <data name="TrayMenuStopAllProcesses" xml:space="preserve">
-      <value>Stop All Processes</value>
+    <data name="TrayMenuStopAllProcesses" xml:space="preserve">
+        <value>Stop all processes</value>
     </data>
         <data name="TrayMenuStopDevEnv" xml:space="preserve">
       <value>Stop development environment</value>
     </data>
-        <data name="TrayMenuRestartAllProcesses" xml:space="preserve">
-      <value>Restart All Processes</value>
+    <data name="TrayMenuRestartAllProcesses" xml:space="preserve">
+        <value>Restart all processes</value>
     </data>
         <data name="TrayMenuRestartDevEnv" xml:space="preserve">
       <value>Restart development environment</value>
@@ -86,7 +86,7 @@
         <value>Stop development environment</value>
     </data>
     <data name="UnsetLocalServerPath" xml:space="preserve">
-        <value>Development evnironement is not set</value>
+        <value>Development envinronement is not set</value>
     </data>
     <data name="TrayMenuStopNpm" xml:space="preserve">
       <value>Stop npm</value>
@@ -94,8 +94,8 @@
         <data name="TrayMenuStopYarn" xml:space="preserve">
       <value>Stop yarn</value>
     </data>
-        <data name="TrayMenuStopTasks" xml:space="preserve">
-      <value>Stop Tasks</value>
+    <data name="TrayMenuStopTasks" xml:space="preserve">
+        <value>Stop tasks</value>
     </data>
         <data name="TrayMenuRestartNpm" xml:space="preserve">
       <value>Restart npm</value>
@@ -103,8 +103,8 @@
         <data name="TrayMenuRestartYarn" xml:space="preserve">
       <value>Restart yarn</value>
     </data>
-        <data name="TrayMenuRestartTasks" xml:space="preserve">
-      <value>Restart Tasks</value>
+    <data name="TrayMenuRestartTasks" xml:space="preserve">
+        <value>Restart tasks</value>
     </data>
     <data name="ActiveProcesses" xml:space="preserve">
         <value>Active processes</value>
@@ -115,22 +115,43 @@
     <data name="UnableToLaunchExecutable" xml:space="preserve">
         <value>Unable to launch executable</value>
     </data>
-    <data name="SettingsTitle" xml:space="preserve">
-        <value>Settings</value>
+    <data name="SelectExecutable" xml:space="preserve">
+        <value>Select an executable</value>
     </data>
-        <data name="SelectExecutable" xml:space="preserve">
-        <value>Select executable</value>
+    <data name="SelectServerPath" xml:space="preserve">
+        <value>Select the path to your development environement manager</value>
     </data>
-        <data name="SelectServerPath" xml:space="preserve">
-        <value>Select the path to your Apache system</value>
-    </data>
-        <data name="ServerManager" xml:space="preserve">
-        <value>PHP server manager (Wamp, Xampp, etc...)</value>
+        <data name="DevEnvManager" xml:space="preserve">
+        <value>Development environment manager (Wamp, Xampp, etc...)</value>
     </data>
         <data name="LanguageSettings" xml:space="preserve">
         <value>Language settings</value>
     </data>
         <data name="ChangeLanguage" xml:space="preserve">
         <value>Change language</value>
+    </data>
+    <data name="TrayMenuStopServe" xml:space="preserve">
+        <value>Stop serving the project</value>
+    </data>
+    <data name="TrayMenuRestartServe" xml:space="preserve">
+        <value>Re-serve the project</value>
+    </data>
+    <data name="Settings" xml:space="preserve">
+        <value>Settings</value>
+    </data>
+    <data name="RestartApp" xml:space="preserve">
+        <value>The application needs to be restarted</value>
+    </data>
+    <data name="RestartNeeded" xml:space="preserve">
+        <value>Application restart required</value>
+    </data>
+    <data name="ProcessesStillRunning" xml:space="preserve">
+        <value>There are still running processes. Do you want to terminate them?</value>
+    </data>
+    <data name="ConfirmExit" xml:space="preserve">
+        <value>Confirm exit</value>
+    </data>
+    <data name="RestartProcesses" xml:space="preserve">
+        <value>Restart processes</value>
     </data>
 </root>

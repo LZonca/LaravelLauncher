@@ -58,7 +58,7 @@
         <data name="StartScheduledTasks" xml:space="preserve">
         <value>Démarrer les tâches planifiées</value>
       </data>
-    <data name="LocalServerPath" xml:space="preserve">
+    <data name="DevEnvPath" xml:space="preserve">
         <value>Chemin de l'environnement de développement</value>
     </data>
     <data name="TrayMenuRestore" xml:space="preserve">
@@ -112,22 +112,43 @@
         <data name="UnableToLaunchExecutable" xml:space="preserve">
         <value>Impossible de lancer l'exécutable</value>
     </data>
-    <data name="SettingsTitle" xml:space="preserve">
-    <value>Paramètres</value>
+    <data name="SelectExecutable" xml:space="preserve">
+        <value>Sélectionner l'exécutable</value>
     </data>
-        <data name="SelectExecutable" xml:space="preserve">
-        <value>Sélectionner l'éxécutable</value>
+    <data name="SelectServerPath" xml:space="preserve">
+        <value>Sélectionnez le chemin vers votre environement de développement</value>
     </data>
-        <data name="SelectServerPath" xml:space="preserve">
-        <value>Sélectionnez le chemin vers votre système apache</value>
-    </data>
-        <data name="ServerManager" xml:space="preserve">
-        <value>Gestionnaire serveur php (Wamp, Xampp, etc...)</value>
-    </data>
-        <data name="LanguageSettings" xml:space="preserve">
-        <value>Paramètres de langue</value>
+    <data name="LanguageSettings" xml:space="preserve">
+        <value>Paramètres linguistiques</value>
     </data>
         <data name="ChangeLanguage" xml:space="preserve">
         <value>Changer de langue</value>
+    </data>
+    <data name="TrayMenuStopServe" xml:space="preserve">
+        <value>Arrêter le projet</value>
+    </data>
+    <data name="TrayMenuRestartServe" xml:space="preserve">
+        <value>Relancer le projet</value>
+    </data>
+    <data name="Settings" xml:space="preserve">
+        <value>Paramètres</value>
+    </data>
+    <data name="RestartApp" xml:space="preserve">
+        <value>L'application a besoin d'être redémarrée</value>
+    </data>
+    <data name="RestartNeeded" xml:space="preserve">
+        <value>L'application doit redémarrer</value>
+    </data>
+    <data name="DevEnvManager" xml:space="preserve">
+        <value>Gestionnaire de l'environment de développement (Wamp, Xampp, etc...)</value>
+    </data>
+    <data name="ProcessesStillRunning" xml:space="preserve">
+        <value>Des commandes sont toujours en cours d'exécution. Voulez vous les stopper?</value>
+    </data>
+    <data name="ConfirmExit" xml:space="preserve">
+        <value>Confirmer la sortie</value>
+    </data>
+    <data name="RestartProcesses" xml:space="preserve">
+        <value>Redémarrer les processus</value>
     </data>
 </root>

@@ -3,6 +3,7 @@ using System.Windows;
 using Microsoft.Win32;
 using System.Globalization;
 using System.Resources;
+using System.Threading;
 
 namespace LaravelLauncher
 {
@@ -15,8 +16,35 @@ namespace LaravelLauncher
             InitializeComponent();
             _resourceManager = new ResourceManager("LaravelLauncher.Resources.Strings", typeof(Settings).Assembly);
             LoadServerExecutablePath();
+            SetLanguage(Properties.Settings.Default.Language ?? "en");
             LoadAvailableLanguages();
         }
+        
+        private void SetLanguage(string cultureCode)
+        {
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo(cultureCode);
+            _resourceManager = new ResourceManager("LaravelLauncher.Resources.Strings", typeof(MainWindow).Assembly);
+            UpdateUi();
+        }
+
+    private void UpdateUi()
+    {
+        SettingsTitle.Content = _resourceManager.GetString("Settings");
+        DevEnvManagerTitle.Text = _resourceManager.GetString("DevEnvManager");
+        SelectFileBtn.Text = _resourceManager.GetString("SelectExecutable");
+        LanguageSettingsLabel.Content = _resourceManager.GetString("LanguageSettings");
+
+        if (Properties.Settings.Default.ServerPath == null)
+        {
+            PathToExecLabel.Text = _resourceManager.GetString("SelectServerPath");
+        }
+        else
+        {
+            PathToExecLabel.Text = _resourceManager.GetString("DevEnvManager");
+        }
+
+        LanguageChangeBtn.Content = _resourceManager.GetString("ChangeLanguage");
+    }
 
         private void LoadAvailableLanguages()
         {
@@ -29,6 +57,7 @@ namespace LaravelLauncher
                     var culture = new CultureInfo(lang);
                     languageSelector.Items.Add(culture.Name);
                 }
+                languageSelector.SelectedItem = Properties.Settings.Default.Language;
             }
         }
 
@@ -42,8 +71,17 @@ namespace LaravelLauncher
             }
 
             Properties.Settings.Default.Save();
-            MessageBox.Show(_resourceManager.GetString("RestartApp"));
+            MessageBox.Show(
+                _resourceManager.GetString("RestartApp"),
+                "Confirm Exit",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+            
+            
+            Application.Current.Shutdown();
         }
+
+        
 
         private void SaveExecutablePath(string path)
         {
@@ -56,11 +94,11 @@ namespace LaravelLauncher
             string path = Properties.Settings.Default.ServerPath;
             if (!string.IsNullOrEmpty(path))
             {
-                pathToExecLabel.Content = path;
+                PathToExecLabel.Text = path;
             }
             else
             {
-                Properties.Settings.Default.ServerPath = pathToExecLabel.Content.ToString();
+                Properties.Settings.Default.ServerPath = PathToExecLabel.Text;
                 Properties.Settings.Default.Save();
             }
         }
@@ -79,7 +117,7 @@ namespace LaravelLauncher
             {
                 string selectedFilePath = openFileDialog.FileName;
                 SaveExecutablePath(selectedFilePath);
-                pathToExecLabel.Content = selectedFilePath;
+                PathToExecLabel.Text = selectedFilePath;
             }
         }
         

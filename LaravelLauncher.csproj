@@ -9,7 +9,6 @@
     <StartupObject></StartupObject>
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
-
   <ItemGroup>
     <None Remove="Assets\images.ico" />
   </ItemGroup>

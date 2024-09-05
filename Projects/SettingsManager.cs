@@ -12,10 +12,10 @@ public class SettingsManager
         File.WriteAllText(SettingsFilePath, json);
     }
 
-    public static List<string> GetProjectPaths()
+    public static List<string?> GetProjectPaths()
     {
         var settings = LoadSettings();
-        var projectPaths = new List<string>();
+        var projectPaths = new List<string?>();
 
         foreach (var project in settings.Projects)
         {
