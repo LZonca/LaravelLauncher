@@ -234,7 +234,7 @@ namespace LaravelLauncher
                     _resourceManager.GetString("ProcessesStillRunning"),
                     _resourceManager.GetString("ConfirmExit"),
                     MessageBoxButton.YesNo,
-                    MessageBoxImage.Question);
+                    MessageBoxImage.Warning);
 
                 if (result == MessageBoxResult.Yes)
                 {
@@ -560,16 +560,31 @@ namespace LaravelLauncher
                 string? selectedPath = dialog.SelectedPath;
 
                 var settings = SettingsManager.LoadSettings();
-                var projects = SettingsManager.GetProjectPaths();
-
-                if (!SettingsManager.GetProjectPaths().Contains(selectedPath))
+                if (settings != null)
                 {
-                    projects.Add(selectedPath);
-                    SettingsManager.SaveSettings(settings);
-                    _projectPath = dialog.SelectedPath;
-                    NomProjetLabel.Content = System.IO.Path.GetFileName(_projectPath);
-                    CheminProjetLabel.Content = _projectPath;
-                    LoadRecentProjects();
+                    var projects = settings.Projects;
+
+                    if (projects.All(p => p.Path != selectedPath))
+                    {
+                        projects.Add(new ProjectSettings { Path = selectedPath });
+                        SettingsManager.SaveSettings(settings);
+                        _projectPath = selectedPath;
+                        NomProjetLabel.Content = System.IO.Path.GetFileName(_projectPath);
+                        CheminProjetLabel.Content = _projectPath;
+                        LoadRecentProjects();
+
+                        // Set the newly added project as the selected item
+                        foreach (ListBoxItem item in RecentProjectsList.Items)
+                        {
+                            if (item.Content.ToString() == System.IO.Path.GetFileName(selectedPath))
+                            {
+                                RecentProjectsList.SelectedItem = item;
+                                break;
+                            }
+                        }
+
+                        StartProjectBtn.IsEnabled = true;
+                    }
                 }
             }
         }
@@ -618,13 +633,50 @@ namespace LaravelLauncher
                 }
             }
         }
+        private void RemoveProjectBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (RecentProjectsList.SelectedItem is ListBoxItem selectedItem && selectedItem.Content != null)
+            {
+                string? folderName = selectedItem.Content.ToString();
+                if (folderName != null && _folderNameToPathMap.TryGetValue(folderName, out string? fullPath))
+                {
+                    // Show confirmation message box
+                    var result = System.Windows.MessageBox.Show(
+                        _resourceManager.GetString("ConfirmRemoveProject"),
+                        _resourceManager.GetString("Confirm"),
+                        MessageBoxButton.YesNo,
+                        MessageBoxImage.Question);
 
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        // Remove from dictionary
+                        _folderNameToPathMap.Remove(folderName);
+
+                        // Remove from user settings
+                        var settings = SettingsManager.LoadSettings();
+                        if (settings != null)
+                        {
+                            settings.Projects.RemoveAll(p => p.Path == fullPath);
+                            SettingsManager.SaveSettings(settings);
+                        }
+
+                        // Update RecentProjectsList
+                        LoadRecentProjects();
+                    }
+                }
+            }
+        }
         #endregion
 
         private void SettingsBtn_Click(object sender, RoutedEventArgs e)
         {
             Settings settingsWindow = new Settings();
             settingsWindow.Show();
+        }
+
+        private void SaveBtn_Click(object sender, RoutedEventArgs e)
+        {
+            
         }
     }
 }

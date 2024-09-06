@@ -154,4 +154,10 @@
     <data name="RestartProcesses" xml:space="preserve">
         <value>Restart processes</value>
     </data>
+    <data name="ConfirmRemoveProject" xml:space="preserve">
+        <value>Please confirm that you want to remove the project from this menu. (The folder will NOT be deleted)</value>
+    </data>
+    <data name="Confirm" xml:space="preserve">
+        <value>Confirm</value>
+    </data>
 </root>

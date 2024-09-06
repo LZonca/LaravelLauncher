@@ -151,4 +151,10 @@
     <data name="RestartProcesses" xml:space="preserve">
         <value>Redémarrer les processus</value>
     </data>
+    <data name="ConfirmRemoveProject" xml:space="preserve">
+        <value>Veuillez confirmer que vous voulez retirer ce fichier de la liste. (Le dossier ne sera PAS supprimé)</value>
+    </data>
+    <data name="Confirm" xml:space="preserve">
+        <value>Confirmation</value>
+    </data>
 </root>

@@ -73,7 +73,7 @@ namespace LaravelLauncher
             Properties.Settings.Default.Save();
             MessageBox.Show(
                 _resourceManager.GetString("RestartApp"),
-                "Confirm Exit",
+                _resourceManager.GetString("RestartNeeded"),
                 MessageBoxButton.OK,
                 MessageBoxImage.Warning);
             

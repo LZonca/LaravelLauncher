@@ -6,6 +6,19 @@
         xmlns:local="clr-namespace:LaravelLauncher"
         mc:Ignorable="d"
         Title="Laravel Launcher" Height="771" Width="942" HorizontalAlignment="Center" VerticalAlignment="Center" Icon="/Assets/images.jpg">
+    <!--<Window.Resources>
+        <Style x:Key="NoHoverButtonStyle" TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>-->
     <Window.Background>
         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
             <GradientStop Color="Black"/>
@@ -36,13 +49,15 @@
                     </TransformGroup>
                 </Label.RenderTransform>
             </Label>
-            <Button x:Name="SettingsBtn" VerticalAlignment="Center" Height="48" Click="SettingsBtn_Click" Grid.Column="1" HorizontalAlignment="Center" Width="50">
+            <Button x:Name="SettingsBtn" VerticalAlignment="Center" Height="48" Click="SettingsBtn_Click" Grid.Column="1" HorizontalAlignment="Center" Width="50" BorderBrush="{x:Null}">
                 <Button.Background>
-                    <ImageBrush ImageSource="/Assets/images.jpg"/>
+                    <ImageBrush ImageSource="/settingsicon.png"/>
+
+
                 </Button.Background>
             </Button>
         </Grid>
-        <Grid x:Name="InteriorGrid" Margin="0,41,0,0" Grid.ColumnSpan="2" Grid.Row="1">
+        <Grid x:Name="InteriorGrid" Margin="0,41,0,0" Grid.ColumnSpan="2" Grid.Column="0" Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition x:Name="recentProjectsCollumn"/>
                 <ColumnDefinition x:Name="launchSettingsCollumn"/>
@@ -52,6 +67,11 @@
                 <Label x:Name="NomProjetLabel" Content="Titre du projet" HorizontalAlignment="Center" VerticalAlignment="Top" Height="41" Width="450" FontSize="24" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="0,23,0,0" FontFamily="Verdana"/>
                 <Label x:Name="CheminProjetLabel" Content="Chemin du projet" HorizontalAlignment="Center" Margin="0,64,0,0" VerticalAlignment="Top" Height="31" Width="450" HorizontalContentAlignment="Center" FontFamily="Verdana"/>
                 <Button x:Name="FileSelectBtn" Content="Sélectionner un dossier" HorizontalAlignment="Center" Margin="0,100,0,0" VerticalAlignment="Top" Height="42" Width="138" Click="SelectProjectPath_Click" FontWeight="Bold" Background="#FFD8E9A8"/>
+                <Button x:Name="RemoveProjectBtn" HorizontalAlignment="Left" Margin="389,100,0,0" VerticalAlignment="Top" Height="42" Width="44" Click="RemoveProjectBtn_Click" BorderBrush="{x:Null}">
+                    <Button.Background>
+                        <ImageBrush ImageSource="/remove.png"/>
+                    </Button.Background>
+                </Button>
             </Grid>
             <Grid x:Name="OptionsGrid" Grid.Column="1" HorizontalAlignment="Center" Width="594" Background="#1E5128" Margin="0,0,0,11">
                 <Label x:Name="OptionsTitleLabel" Content="Options de lancement" HorizontalAlignment="Center" Margin="0,20,0,0" VerticalAlignment="Top" Height="44" Width="574" HorizontalContentAlignment="Center" FontSize="24" FontFamily="Verdana"/>
@@ -59,11 +79,22 @@
                 <CheckBox x:Name="yarnCheckbox" Content="Lancer yarn" HorizontalAlignment="Left" Margin="142,182,0,0" VerticalAlignment="Top"  Height="24" Width="228" VerticalContentAlignment="Center" FontWeight="Bold" FontFamily="Verdana"/>
                 <CheckBox x:Name="taskWorkCheckbox" Content="Démarrer les taches programées" HorizontalAlignment="Left" Margin="142,211,0,0" VerticalAlignment="Top"  Height="24" VerticalContentAlignment="Center" FontWeight="Bold" Width="296" FontFamily="Verdana"/>
                 <Grid Margin="0,309,0,0" VerticalAlignment="Top" HorizontalAlignment="Center" Height="65" Width="282">
-                    <Button x:Name="StartLocalServerBtn" VerticalAlignment="Center" Click="StartLocalServerBtn_Click" FontWeight="Bold" Background="#FFE20A0A" Height="39" HorizontalAlignment="Left" Width="39"/>
+                    <Button x:Name="StartLocalServerBtn" VerticalAlignment="Center" Click="StartLocalServerBtn_Click" FontWeight="Bold" Height="39" HorizontalAlignment="Left" Width="39" Background="{x:Null}">
+                        <Image Height="37" Width="36">
+                            <Image.OpacityMask>
+                                <ImageBrush ImageSource="/on-off.png"/>
+                            </Image.OpacityMask>
+                        </Image>
+                    </Button>
                     <TextBlock Text="Start developpement env" x:Name="StartLocalServerLabel" TextWrapping="Wrap" TextAlignment="Center" Margin="44,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Verdana" FontWeight="Bold" FontSize="14" />
                 </Grid>
                 <Button x:Name="StartProjectBtn" Content="Lancer le projet" HorizontalAlignment="Center" Margin="0,438,0,0" VerticalAlignment="Top" Height="67" Width="311" Click="StartProjectBtn_Click" FontWeight="Bold" Background="#FFD8E9A8" FontSize="18" FontFamily="Verdana"/>
                 <Label x:Name="LocalServerPathLabel" Content="Local server path&#xA;" HorizontalAlignment="Center" Margin="0,279,0,0" VerticalAlignment="Top" Height="30" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontFamily="Verdana"/>
+                <Button x:Name="SaveBtn" Content="" HorizontalAlignment="Center" Margin="0,91,0,0" VerticalAlignment="Top" Height="40" Width="46" Click="SaveBtn_Click" BorderBrush="{x:Null}">
+                    <Button.Background>
+                        <ImageBrush ImageSource="/saveicon.png"/>
+                    </Button.Background>
+                </Button>
             </Grid>
         </Grid>
     </Grid>

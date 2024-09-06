@@ -10,7 +10,12 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="artworks-Q61q2IpGG3x0QvIQ-FRIyHw-t500x500.jpg" />
     <None Remove="Assets\images.ico" />
+    <None Remove="on-off.png" />
+    <None Remove="remove.png" />
+    <None Remove="saveicon.png" />
+    <None Remove="settingsicon.png" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,12 +1,13 @@
 using System.Text.Json;
 using System.IO;
 using System.Collections.Generic;
+using LaravelLauncher.Projects;
 
 public class SettingsManager
 {
     private const string SettingsFilePath = "UserSettings.json";
 
-    public static void SaveSettings(UserSettings settings)
+    public static void SaveSettings(UserSettings? settings)
     {
         string json = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });
         File.WriteAllText(SettingsFilePath, json);
@@ -17,17 +18,18 @@ public class SettingsManager
         var settings = LoadSettings();
         var projectPaths = new List<string?>();
 
-        foreach (var project in settings.Projects)
-        {
-            projectPaths.Add(project.Path);
-        }
+        if (settings != null)
+            foreach (var project in settings.Projects)
+            {
+                projectPaths.Add(project.Path);
+            }
 
         return projectPaths;
     }
 
 
 
-    public static UserSettings LoadSettings()
+    public static UserSettings? LoadSettings()
     {
         if (File.Exists(SettingsFilePath))
         {
