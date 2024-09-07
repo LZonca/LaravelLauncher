@@ -523,7 +523,7 @@ namespace LaravelLauncher
         private void LoadProjectSettings(string? projectPath)
         {
             var settings = SettingsManager.LoadSettings();
-            var projectSettings = settings.Projects.FirstOrDefault(p => p.Path == projectPath);
+            var projectSettings = settings?.Projects.FirstOrDefault(p => p.Path == projectPath);
 
             if (projectSettings != null)
             {
@@ -537,12 +537,12 @@ namespace LaravelLauncher
         private void UpdateProjectSettings(bool useNpm, bool useYarn, bool useStartTasks)
         {
             var settings = SettingsManager.LoadSettings();
-            var projectSettings = settings.Projects.FirstOrDefault(p => p.Path == this._projectPath);
+            var projectSettings = settings?.Projects.FirstOrDefault(p => p.Path == this._projectPath);
 
             if (projectSettings == null)
             {
                 projectSettings = new ProjectSettings { Path = this._projectPath };
-                settings.Projects.Add(projectSettings);
+                settings?.Projects.Add(projectSettings);
             }
 
             projectSettings.UseNpm = useNpm;
@@ -676,7 +676,29 @@ namespace LaravelLauncher
 
         private void SaveBtn_Click(object sender, RoutedEventArgs e)
         {
-            
+            // Update the variables with the current checkbox states
+            _startNpm = npmCheckbox.IsChecked == true;
+            _startYarn = yarnCheckbox.IsChecked == true;
+            _startTasks = taskWorkCheckbox.IsChecked == true;
+
+            // Load the settings
+            var settings = SettingsManager.LoadSettings();
+            var projectSettings = settings?.Projects.FirstOrDefault(p => p.Path == this._projectPath);
+
+            // If project settings do not exist, create a new entry
+            if (projectSettings == null)
+            {
+                projectSettings = new ProjectSettings { Path = this._projectPath };
+                settings?.Projects.Add(projectSettings);
+            }
+
+            // Update the project settings with the current values
+            projectSettings.UseNpm = _startNpm;
+            projectSettings.UseYarn = _startYarn;
+            projectSettings.startTasks = _startTasks;
+
+            // Save the updated settings
+            SettingsManager.SaveSettings(settings);
         }
     }
 }

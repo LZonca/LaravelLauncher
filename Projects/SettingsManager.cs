@@ -26,9 +26,7 @@ public class SettingsManager
 
         return projectPaths;
     }
-
-
-
+    
     public static UserSettings? LoadSettings()
     {
         if (File.Exists(SettingsFilePath))

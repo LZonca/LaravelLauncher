@@ -28,6 +28,10 @@
     <Resource Include="Assets\artworks-Q61q2IpGG3x0QvIQ-FRIyHw-t500x500.jpg" />
     <Resource Include="Assets\images.ico" />
     <Resource Include="Assets\images.jpg" />
+    <Resource Include="on-off.png" />
+    <Resource Include="remove.png" />
+    <Resource Include="saveicon.png" />
+    <Resource Include="settingsicon.png" />
   </ItemGroup>
 
   <ItemGroup>
