@@ -190,6 +190,7 @@ namespace LaravelLauncher
             }
             else
             {
+                StartLocalServerBtn.IsEnabled = false;
                 LocalServerPathLabel.Content = "";
             }
         
@@ -272,6 +273,7 @@ namespace LaravelLauncher
             yarnCheckbox.Content = _resourceManager.GetString("LaunchYarn");
             taskWorkCheckbox.Content = _resourceManager.GetString("StartScheduledTasks");
             LocalServerPathLabel.Content = _resourceManager.GetString(!string.IsNullOrEmpty(_serverPath) ? "LocalServerPath" : "UnsetLocalServerPath");
+            TitleLabel.Content = _resourceManager.GetString("LaravelLauncher");
         }
         
         private void UpdateTrayMenu()

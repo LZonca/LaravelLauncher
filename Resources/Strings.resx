@@ -160,4 +160,7 @@
     <data name="Confirm" xml:space="preserve">
         <value>Confirm</value>
     </data>
+    <data name="LaravelLauncher" xml:space="preserve">
+        <value>LazyRavel</value>
+    </data>
 </root>

@@ -157,4 +157,7 @@
     <data name="Confirm" xml:space="preserve">
         <value>Confirmation</value>
     </data>
+    <data name="LaravelLauncher" xml:space="preserve">
+        <value>LaraFlème</value>
+    </data>
 </root>

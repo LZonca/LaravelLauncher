@@ -8,6 +8,9 @@
     <UseWPF>true</UseWPF>
     <StartupObject></StartupObject>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <ApplicationIcon>images.ico</ApplicationIcon>
+    <NeutralLanguage>fr-DZ</NeutralLanguage>
+    <PackageIcon>images.jpg</PackageIcon>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="artworks-Q61q2IpGG3x0QvIQ-FRIyHw-t500x500.jpg" />
@@ -16,6 +19,9 @@
     <None Remove="remove.png" />
     <None Remove="saveicon.png" />
     <None Remove="settingsicon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="images.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -53,6 +59,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Assets\images.jpg">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
     <None Update="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

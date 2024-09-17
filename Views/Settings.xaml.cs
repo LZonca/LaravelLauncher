@@ -89,7 +89,7 @@ namespace LaravelLauncher
             Properties.Settings.Default.Save();
         }
 
-        public void LoadServerExecutablePath()
+        private void LoadServerExecutablePath()
         {
             string path = Properties.Settings.Default.ServerPath;
             if (!string.IsNullOrEmpty(path))
